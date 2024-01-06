@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from random import choice
 from dice import d12
 
 
@@ -8,48 +8,65 @@ class Trait:
         self.name = name
 
 
-class Race(Enum):
-    Human = auto()
-    Halfling = auto()
-    Dwarf = auto()
-    Elf = auto()
-    Duck = auto()
-    Wolf = auto()
+class Human:
+    name = "Människa"
+    traits = [Trait(3, "Anpasslig")]
+    suggested_names = ['Joruna', 'Tym', 'Halvelda', 'Garmander', 'Verolun',  'Lothar']
 
-    @property
-    def trait(self):
-        if self == Race.Human:
-            return [Trait(3, "Adaptable")]
-        elif self == Race.Halfling:
-            return [Trait(3, "Elusive")]
-        elif self == Race.Dwarf:
-            return [Trait(3, " Resentful")]
-        elif self == Race.Elf:
-            return [Trait(3, "Inner peace")]
-        elif self == Race.Duck:
-            return [Trait(3, " Crusty"), Trait(0, " Flippers")]
-        elif self == Race.Wolf:
-            return [Trait(3, "Hunt sense")]
-        else:
-            raise Exception("race {} not found".format(self))
+
+class Halfling:
+    name = "Halvling"
+    traits = [Trait(3, "Svårfångad")]
+    suggested_names = ['Kvicke', 'Brine', 'Kott', 'Humle', 'Perrywick', 'Theolina']
+
+
+class Dwarf:
+    name = "Dvärg"
+    traits = [Trait(3, " Långsint")]
+    suggested_names = ['Fnöskberga', 'Halwyld', 'Tymolana', 'Traut', 'Urd', 'Fermer']
+
+
+class Elf:
+    name = 'Alv'
+    traits = [Trait(3, "Inre frid")]
+    suggested_names = ['Arasin', 'Illyriana', 'Galvander', 'Tyrindelia', 'Erwilnor', 'Andremone']
+
+
+class Duck:
+    name = 'Anka'
+    traits = [Trait(3, " Vresig"), Trait(0, " Simfötter")]
+    suggested_names = ['Kvucksum', 'Splatts', 'Mogge', 'Groddy', 'Blisandina', 'Svulmhugg']
+
+
+class Wolf:
+    name = 'Varg'
+    traits = [Trait(3, "Jaktsinne")]
+    suggested_names = ['Wyld', 'Vargskugga', 'Lunariem', 'Obdurian', 'Frostbite', 'Wuldenhall']
+
+
+available_races = [Human, Halfling, Dwarf, Elf, Duck, Wolf]
 
 
 def roll_race():
     dice_roll = d12()
     if dice_roll <= 4:
-        return Race.Human
+        return Human()
 
     if dice_roll <= 7:
-        return Race.Halfling
+        return Halfling()
 
     if dice_roll <= 9:
-        return Race.Dwarf
+        return Dwarf()
 
     if dice_roll == 10:
-        return Race.Elf
+        return Elf()
 
     if dice_roll == 11:
-        return Race.Duck
+        return Duck()
 
     if dice_roll == 12:
-        return Race.Wolf
+        return Wolf()
+
+
+def roll_first_name(race):
+    return choice(race.suggested_names)
