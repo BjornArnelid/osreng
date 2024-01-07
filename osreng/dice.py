@@ -11,3 +11,9 @@ def d10():
 
 def d6():
     return random.randint(1, 6)
+
+
+def roll_attribute():
+    dies = [d6() for _ in range(4)]
+    dies.remove(min(dies))
+    return sum(dies)

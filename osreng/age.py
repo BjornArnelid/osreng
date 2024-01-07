@@ -1,5 +1,6 @@
 from enum import Enum, auto
 from dice import d6
+from attribute import STRENGTH, CONSTITUTION, DEXTERITY, INTELLIGENCE, WILL, CHARISMA
 
 
 class Age(Enum):
@@ -7,6 +8,15 @@ class Age(Enum):
     MiddleAged = auto()
     Old = auto()
 
+    def adjust_for_age(self, attribute):
+        if self is Age.Young and (attribute == DEXTERITY or attribute == CONSTITUTION):
+            return + 1
+        elif self is Age.Old and (attribute == STRENGTH or attribute == DEXTERITY or attribute == CONSTITUTION):
+            return -2
+        elif self is Age.Old and (attribute == INTELLIGENCE or attribute == WILL):
+            return +1
+        else:
+            return 0
 
 def roll_age():
     dice_roll = d6()
