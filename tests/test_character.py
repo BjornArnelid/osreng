@@ -7,6 +7,7 @@ from clazz import roll_class, roll_surname, available_classes, Warrior
 from age import roll_age, Age
 from character_sheet import CharacterSheet, CharacterError
 from dice import roll_attribute
+from attribute import STRENGTH, CHARISMA
 
 
 class MyTestCase(unittest.TestCase):
@@ -96,6 +97,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(9, sheet.constitution)
         self.assertEqual(12, sheet.intelligence)
         self.assertEqual(12, sheet.will)
+
+    def test_switch_attributes(self):
+        sheet = CharacterSheet()
+        sheet._attributes = [13, 11, 11, 11, 11, 15]
+        sheet.switch_attributes(STRENGTH, CHARISMA)
+        self.assertEqual(15, sheet.strength)
+        self.assertEqual(13, sheet.charisma)
 
 
 if __name__ == '__main__':

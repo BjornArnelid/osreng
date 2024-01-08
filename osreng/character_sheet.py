@@ -105,15 +105,18 @@ class CharacterSheet:
     def charisma(self, value):
         self._set_attribute(CHARISMA, value)
 
+    def switch_attributes(self, first, second):
+        first_value = self._get_attribute(first)
+        self._set_attribute(first, self._get_attribute(second))
+        self._set_attribute(second, first_value)
+
     def shift_max_to_preferred_attribute(self):
         if not self.clazz:
             raise CharacterError("Cannot switch to preferred attribute without selected class")
         preferred_id = self.clazz.preferred_attribute
 
-        max_value = max(self._attributes)
-        max_index = self._attributes.index(max_value)
-        self._set_attribute(max_index, self._get_attribute(preferred_id))
-        self._set_attribute(preferred_id, max_value)
+        max_index = self._attributes.index(max(self._attributes))
+        self.switch_attributes(preferred_id, max_index)
 
     def __str__(self):
         character_string = "KARAKTÄR"
