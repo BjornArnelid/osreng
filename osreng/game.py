@@ -2,7 +2,7 @@ from race import roll_race, roll_first_name
 from clazz import roll_class, roll_surname
 from character_sheet import CharacterSheet
 from age import roll_age
-from dice import roll_attribute
+from attribute import roll_attribute
 
 
 if __name__ == '__main__':

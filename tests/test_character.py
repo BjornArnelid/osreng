@@ -6,8 +6,8 @@ from race import roll_race, roll_first_name, available_races, Human
 from clazz import roll_class, roll_surname, available_classes, Warrior
 from age import roll_age, Age
 from character_sheet import CharacterSheet, CharacterError
-from dice import roll_attribute
-from attribute import STRENGTH, CHARISMA
+from dice import no_die, d4, d6
+from attribute import STRENGTH, CHARISMA, roll_attribute
 
 
 class MyTestCase(unittest.TestCase):
@@ -104,6 +104,54 @@ class MyTestCase(unittest.TestCase):
         sheet.switch_attributes(STRENGTH, CHARISMA)
         self.assertEqual(15, sheet.strength)
         self.assertEqual(13, sheet.charisma)
+
+    @parameterized.expand(available_races)
+    def test_get_movement_speed_for_races(self, Race):
+        sheet = CharacterSheet()
+        sheet.race = Race()
+        sheet.dexterity = 11
+        self.assertTrue(0 < sheet.movement_speed < 20)
+
+    def test_adjust_speed_with_dexterity(self):
+        sheet = CharacterSheet()
+        sheet.race = Human()
+
+        sheet.dexterity = 6
+        self.assertEqual(6, sheet.movement_speed)
+
+        sheet.dexterity = 7
+        self.assertEqual(8, sheet.movement_speed)
+
+        sheet.dexterity = 11
+        self.assertEqual(10, sheet.movement_speed)
+
+        sheet.dexterity = 13
+        self.assertEqual(12, sheet.movement_speed)
+
+        sheet.dexterity = 16
+        self.assertEqual(14, sheet.movement_speed)
+
+    def test_calculate_bonus_damage(self):
+        sheet = CharacterSheet()
+        sheet.strength = 3
+        self.assertEqual(no_die, sheet.calculate_bonus_damage(STRENGTH))
+
+        sheet.strength = 13
+        self.assertEqual(d4, sheet.calculate_bonus_damage(STRENGTH))
+
+        sheet.strength = 17
+        self.assertEqual(d6, sheet.calculate_bonus_damage(STRENGTH))
+
+    def test_hitpoints(self):
+        sheet = CharacterSheet()
+        sheet.constitution = 11
+        self.assertEqual([11, 11], sheet.hitpoints)
+
+        sheet.modify_hitpoints(-3)
+        self.assertEqual([8, 11], sheet.hitpoints)
+
+        sheet.modify_hitpoints(+5)
+        self.assertEqual([11, 11], sheet.hitpoints)
 
 
 if __name__ == '__main__':
