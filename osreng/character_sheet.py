@@ -1,8 +1,9 @@
 from race import available_races
 from clazz import available_classes
 from age import Age, print_age
-from attribute import STRENGTH, CONSTITUTION, DEXTERITY, INTELLIGENCE, WILL, CHARISMA, attribute_names, calculate_movement_modifier, calculate_bonus_damage
+from attribute import STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA, attribute_names, calculate_movement_modifier, calculate_bonus_damage, calculate_skill_base_chance
 from dice import to_die_string
+from skill import TrainedSkill
 
 
 class CharacterSheet:
@@ -14,6 +15,7 @@ class CharacterSheet:
         self._attributes = []
         self._hitpoints = None
         self._mana = None
+        self.trained_skills = []
 
     @property
     def race(self):
@@ -79,11 +81,11 @@ class CharacterSheet:
 
     @property
     def dexterity(self):
-        return self._get_attribute(DEXTERITY)
+        return self._get_attribute(AGILITY)
 
     @dexterity.setter
     def dexterity(self, value):
-        self._set_attribute(DEXTERITY, value)
+        self._set_attribute(AGILITY, value)
 
     @property
     def intelligence(self):
@@ -150,6 +152,24 @@ class CharacterSheet:
         max_index = self._attributes.index(max(self._attributes))
         self.switch_attributes(preferred_id, max_index)
 
+    def set_trained_skills(self, skills_to_train):
+        for skill in skills_to_train:
+            base_chance = calculate_skill_base_chance(self._get_attribute(skill.skill_attribute))
+            self.trained_skills.append(TrainedSkill(base_chance * 2,  skill))
+
+    def get_skill_value(self, skill):
+        for trained in self.trained_skills:
+            if trained.skill == skill:
+                return trained.skill_value
+
+        return self.get_base_chance(skill)
+
+    def get_base_chance(self, skill):
+        if skill.base_skill:
+            return calculate_skill_base_chance(self._get_attribute(skill.skill_attribute))
+        else:
+            return 0
+
     def __str__(self):
         character_string = "KARAKTÄR"
         if self.name:
@@ -166,8 +186,18 @@ class CharacterSheet:
             for attribute_index in range(6):
                 character_string += "{}: {}, ".format(attribute_names[attribute_index], self._get_attribute(attribute_index))
             character_string += "\nFörflyttning: {}".format(self.movement_speed)
-            character_string += "\nSkadebonus styrka: {}, Skadebonus smidighet: {}".format(to_die_string(self.calculate_bonus_damage(STRENGTH)), to_die_string(self.calculate_bonus_damage(DEXTERITY)))
+            character_string += "\nSkadebonus styrka: {}, Skadebonus smidighet: {}".format(to_die_string(self.calculate_bonus_damage(STRENGTH)), to_die_string(self.calculate_bonus_damage(AGILITY)))
             character_string += "\nKroppspoäng: {}, Viljepoäng: {}".format(self.hitpoints, self.mana)
+
+        if self.trained_skills:
+            character_string += "\n\nFärdigheter\n"
+            delimiter = ""
+            for skill in self.trained_skills:
+                character_string += delimiter + "{}: {}".format(skill.skill.name, skill.skill_value)
+                if delimiter == "   ":
+                    delimiter = "\n"
+                else:
+                    delimiter = "   "
 
         return character_string
 

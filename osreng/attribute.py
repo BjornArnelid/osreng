@@ -3,7 +3,7 @@ from dice import no_die, d4, d6
 
 STRENGTH = 0
 CONSTITUTION = 1
-DEXTERITY = 2
+AGILITY = 2
 INTELLIGENCE = 3
 WILL = 4
 CHARISMA = 5
@@ -38,3 +38,16 @@ def calculate_bonus_damage(value):
         return d4
     else:
         return d6
+
+
+def calculate_skill_base_chance(value):
+    if value <= 5:
+        return 3
+    elif value <= 8:
+        return 4
+    elif value <= 12:
+        return 5
+    elif value <= 15:
+        return 6
+    else:
+        return 7

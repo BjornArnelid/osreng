@@ -20,6 +20,15 @@ def d4():
 def no_die():
     return 0
 
+
+def pick_n_unique(original_list, number_of_picks):
+    options_left = original_list.copy()
+    picked = []
+    for _ in range(number_of_picks):
+        picked.append(options_left.pop(random.randint(0, len(options_left) - 1)))
+    return picked
+
+
 def to_die_string(die_function):
     if die_function == no_die:
         return "----"

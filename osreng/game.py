@@ -1,8 +1,9 @@
 from race import roll_race, roll_first_name
-from clazz import roll_class, roll_surname
+from clazz import roll_class, roll_surname, roll_clazz_skills
 from character_sheet import CharacterSheet
 from age import roll_age
 from attribute import roll_attribute
+from skill import roll_general_skills
 
 
 if __name__ == '__main__':
@@ -21,5 +22,10 @@ if __name__ == '__main__':
     sheet.charisma = roll_attribute()
 
     sheet.shift_max_to_preferred_attribute()
+
+    skill_points = sheet.age.number_of_skillpoints
+    class_skills = roll_clazz_skills(sheet.clazz, skill_points[0])
+    general_skills = roll_general_skills(class_skills, skill_points[1])
+    sheet.set_trained_skills(class_skills + general_skills)
 
     print(sheet)

@@ -8,6 +8,7 @@ from age import roll_age, Age
 from character_sheet import CharacterSheet, CharacterError
 from dice import no_die, d4, d6
 from attribute import STRENGTH, CHARISMA, roll_attribute
+from skill import BEAST_LORE, BLUFFING, MENTALISM
 
 
 class MyTestCase(unittest.TestCase):
@@ -152,6 +153,27 @@ class MyTestCase(unittest.TestCase):
 
         sheet.modify_hitpoints(+5)
         self.assertEqual([11, 11], sheet.hitpoints)
+
+    def test_base_ability_skills(self):
+        sheet = CharacterSheet()
+        sheet.intelligence = 3
+        self.assertEqual(3, sheet.get_skill_value(BEAST_LORE))
+        self.assertEqual(0, sheet.get_skill_value(MENTALISM))
+
+        sheet.charisma = 8
+        self.assertEqual(4, sheet.get_skill_value(BLUFFING))
+
+    def test_trained_skills(self):
+        sheet = CharacterSheet()
+        sheet.age = Age.Young
+        sheet.intelligence = 11
+        sheet.set_trained_skills([BEAST_LORE])
+        self.assertEqual(10, sheet.get_skill_value(BEAST_LORE))
+
+    @parameterized.expand(available_classes)
+    def test_class_skills(self, Clazz):
+        skill_list = Clazz().skills
+        self.assertTrue(len(skill_list) >= 6, "Expected at least 6 skills for {}, skills returned {}".format(Clazz, skill_list))
 
 
 if __name__ == '__main__':
