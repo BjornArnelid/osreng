@@ -3,7 +3,7 @@ import unittest
 from parameterized import parameterized
 
 from race import roll_race, roll_first_name, available_races, Human
-from clazz import roll_class, roll_surname, available_classes, Warrior
+from clazz import roll_class, roll_surname, available_classes, Warrior, Mage, Craftsman
 from age import roll_age, Age
 from character_sheet import CharacterSheet, CharacterError
 from dice import no_die, d4, d6
@@ -174,6 +174,15 @@ class MyTestCase(unittest.TestCase):
     def test_class_skills(self, Clazz):
         skill_list = Clazz().skills
         self.assertTrue(len(skill_list) >= 6, "Expected at least 6 skills for {}, skills returned {}".format(Clazz, skill_list))
+
+    @parameterized.expand(available_classes)
+    def test_starting_abilities(self, Clazz):
+        sheet = CharacterSheet()
+        sheet.clazz = Clazz()
+        if isinstance(sheet.clazz, Mage) or isinstance(sheet.clazz, Craftsman):
+            self.assertFalse(sheet.hero_abilities, "Clazz {} should not have default assigned hero abilities .")
+        else:
+            self.assertTrue(sheet.hero_abilities, "Class {} should have hero ability".format(sheet.clazz.name))
 
 
 if __name__ == '__main__':

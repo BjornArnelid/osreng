@@ -16,6 +16,7 @@ class CharacterSheet:
         self._hitpoints = None
         self._mana = None
         self.trained_skills = []
+        self.hero_abilities = []
 
     @property
     def race(self):
@@ -36,6 +37,9 @@ class CharacterSheet:
     def clazz(self, clazz):
         if any(isinstance(clazz, cls) for cls in available_classes):
             self._clazz = clazz
+            hero_ability = clazz.hero_ability
+            if hero_ability:
+                self.hero_abilities.append(hero_ability)
         else:
             raise CharacterError("{} is not an acceptable class".format(clazz))
 
@@ -59,8 +63,15 @@ class CharacterSheet:
             if not self._attributes:
                 self._attributes = [None] * 6
             self._attributes[attribute] = value
+            self._adjust_secondary_stats(attribute)
         else:
             raise CharacterError("{} is not an acceptable attribute for {}".format(value, attribute))
+
+    def _adjust_secondary_stats(self, attribute):
+        if attribute is CONSTITUTION:
+            self._hitpoints = [self.constitution, self.constitution]
+        elif attribute is WILL:
+            self._mana = [self.will, self.will]
 
     @property
     def strength(self):
@@ -77,7 +88,7 @@ class CharacterSheet:
     @constitution.setter
     def constitution(self, value):
         self._set_attribute(CONSTITUTION, value)
-        self._hitpoints = [self.constitution, self.constitution]
+
 
     @property
     def dexterity(self):
@@ -102,7 +113,6 @@ class CharacterSheet:
     @will.setter
     def will(self, value):
         self._set_attribute(WILL, value)
-        self._mana = [self.will, self.will]
 
     @property
     def charisma(self):
@@ -162,9 +172,6 @@ class CharacterSheet:
             if trained.skill == skill:
                 return trained.skill_value
 
-        return self.get_base_chance(skill)
-
-    def get_base_chance(self, skill):
         if skill.base_skill:
             return calculate_skill_base_chance(self._get_attribute(skill.skill_attribute))
         else:
@@ -194,11 +201,15 @@ class CharacterSheet:
             delimiter = ""
             for skill in self.trained_skills:
                 character_string += delimiter + "{}: {}".format(skill.skill.name, skill.skill_value)
-                if delimiter == "   ":
+                if delimiter == "\t":
                     delimiter = "\n"
                 else:
-                    delimiter = "   "
+                    delimiter = "\t"
 
+        if self.hero_abilities:
+            character_string += "\nHjälteförmågor:"
+            for ability in  self.hero_abilities:
+                character_string += "\n{}".format(ability.name)
         return character_string
 
 

@@ -1,9 +1,10 @@
 from race import roll_race, roll_first_name
-from clazz import roll_class, roll_surname, roll_clazz_skills
+from clazz import roll_class, roll_surname, roll_clazz_skills, Craftsman
 from character_sheet import CharacterSheet
 from age import roll_age
 from attribute import roll_attribute
 from skill import roll_general_skills
+from random import choice
 
 
 if __name__ == '__main__':
@@ -11,6 +12,8 @@ if __name__ == '__main__':
     sheet = CharacterSheet()
     sheet.race = roll_race()
     sheet.clazz = roll_class()
+    if isinstance(sheet.clazz, Craftsman):
+        sheet.hero_abilities.append(choice(Craftsman.heroic_abilities))
     sheet.age = roll_age()
     sheet.name = roll_first_name(sheet.race) + ' ' + roll_surname(sheet.clazz)
 
