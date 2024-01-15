@@ -207,9 +207,13 @@ class CharacterSheet:
                     delimiter = "\t"
 
         if self.hero_abilities:
-            character_string += "\nHjälteförmågor:"
+            character_string += "\n\nHjälteförmågor:\n"
+            hero_ability_part = ""
             for ability in  self.hero_abilities:
-                character_string += "\n{}".format(ability.name)
+                if hero_ability_part:
+                    hero_ability_part += ", "
+                hero_ability_part += ability.name
+            character_string += hero_ability_part
         return character_string
 
 

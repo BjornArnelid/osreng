@@ -25,8 +25,8 @@ INTUITION = HeroAbility((MYTHS_AND_LEGENDS, 12), 3, 'Intuition')
 
 TREASURE_HUNTER = HeroAbility((BARTERING, 12), 3, 'Skattletare')
 
-CHAMPION = (((HAMMERS, SWORDS, AXES), 12), 2, 'Förkämpe')
+CHAMPION = HeroAbility(((HAMMERS, SWORDS, AXES), 12), 2, 'Förkämpe')
 
-SEA_LEGS = ((SWIMMING, 12), 1, 'Sjöben')
+SEA_LEGS = HeroAbility((SWIMMING, 12), 1, 'Sjöben')
 
-BACKSTAB = ((KNIVES, 12), 3, 'Tjuvhugg')
+BACKSTAB = HeroAbility((KNIVES, 12), 3, 'Tjuvhugg')
