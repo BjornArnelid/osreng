@@ -1,10 +1,12 @@
+from random import choice
+
 from race import roll_race, roll_first_name
 from clazz import roll_class, roll_surname, roll_clazz_skills, Craftsman
 from character_sheet import CharacterSheet
 from age import roll_age
 from attribute import roll_attribute
 from skill import roll_general_skills
-from random import choice
+from trait import roll_weakness
 
 
 if __name__ == '__main__':
@@ -31,4 +33,5 @@ if __name__ == '__main__':
     general_skills = roll_general_skills(class_skills, skill_points[1])
     sheet.set_trained_skills(class_skills + general_skills)
 
+    sheet.weakness = roll_weakness()
     print(sheet)

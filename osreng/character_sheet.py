@@ -17,6 +17,7 @@ class CharacterSheet:
         self._mana = None
         self.trained_skills = []
         self.hero_abilities = []
+        self.weakness = None
 
     @property
     def race(self):
@@ -181,10 +182,13 @@ class CharacterSheet:
         character_string = "KARAKTÄR"
         if self.name:
             character_string += "\nNamn: " + str(self.name)
+
         if self.race:
             character_string += "\nSläkte: " + self.race.name
+
         if self.clazz:
             character_string += "\nYrke: " + self.clazz.name
+
         if self.age:
             character_string += "\nÅlder: " + print_age(self.age)
 
@@ -214,6 +218,9 @@ class CharacterSheet:
                     hero_ability_part += ", "
                 hero_ability_part += ability.name
             character_string += hero_ability_part
+
+        if self.weakness:
+            character_string += "\n\nSvaghet: {}".format(self.weakness)
         return character_string
 
 

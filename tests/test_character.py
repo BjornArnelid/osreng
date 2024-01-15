@@ -9,7 +9,7 @@ from character_sheet import CharacterSheet, CharacterError
 from dice import no_die, d4, d6
 from attribute import STRENGTH, CHARISMA, roll_attribute
 from skill import BEAST_LORE, BLUFFING, MENTALISM
-
+from trait import roll_weakness
 
 class MyTestCase(unittest.TestCase):
     def test_roll_race(self):
@@ -183,6 +183,9 @@ class MyTestCase(unittest.TestCase):
             self.assertFalse(sheet.hero_abilities, "Clazz {} should not have default assigned hero abilities .")
         else:
             self.assertTrue(sheet.hero_abilities, "Class {} should have hero ability".format(sheet.clazz.name))
+
+    def test_roll_weakness(self):
+        self.assertTrue(roll_weakness())
 
 
 if __name__ == '__main__':
