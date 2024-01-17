@@ -1,9 +1,11 @@
 from race import available_races
 from clazz import available_classes
 from age import Age, print_age
-from attribute import STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA, attribute_names, calculate_movement_modifier, calculate_bonus_damage, calculate_skill_base_chance
+from attribute import (STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA, attribute_names,
+                       calculate_movement_modifier, calculate_bonus_damage, calculate_skill_base_chance)
 from dice import to_die_string
 from skill import TrainedSkill
+from item import Weapon, Armor, MultiItem, SILVER_COIN, calculate_item_amounts
 
 
 class CharacterSheet:
@@ -18,6 +20,9 @@ class CharacterSheet:
         self.trained_skills = []
         self.hero_abilities = []
         self.weakness = None
+        self.weapons = []
+        self.armor = []
+        self.items = []
 
     @property
     def race(self):
@@ -141,6 +146,15 @@ class CharacterSheet:
     def mana(self):
         return self._mana
 
+    @property
+    def money(self):
+        net_worth = 0
+        for item in self.items:
+            if isinstance(item, MultiItem):
+                if item.item == SILVER_COIN:
+                    net_worth += item.amount
+        return net_worth
+
     def modify_mana(self, new_value):
         if self._mana[0] + new_value > self._mana[1]:
             self._mana[0] = self._mana[1]
@@ -177,6 +191,15 @@ class CharacterSheet:
             return calculate_skill_base_chance(self._get_attribute(skill.skill_attribute))
         else:
             return 0
+
+    def assign_start_items(self, starting_items):
+        for item in calculate_item_amounts(starting_items):
+            if isinstance(item, Weapon):
+                self.weapons.append(item)
+            elif isinstance(item, Armor):
+                self.armor.append(item)
+            else:
+                self.items.append(item)
 
     def __str__(self):
         character_string = "KARAKTÄR"
@@ -221,6 +244,22 @@ class CharacterSheet:
 
         if self.weakness:
             character_string += "\n\nSvaghet: {}".format(self.weakness)
+
+        if self.weapons:
+            character_string += "\n\nVapen:"
+            for weapon in self.weapons:
+                character_string += "\n{}".format(weapon)
+
+        if self.armor:
+            character_string += "\n\nRustning:"
+            for piece in self.armor:
+                character_string += "\n{}".format(piece.name)
+
+        if self.items:
+            character_string += "\n\nUtrustning:"
+            for item in self.items:
+                character_string += "\n{}".format(item)
+
         return character_string
 
 

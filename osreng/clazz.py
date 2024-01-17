@@ -5,9 +5,17 @@ from skill import (BLUFFING, LANGUAGES, ACROBATICS, KNIVES, MYTHS_AND_LEGENDS, E
                    SLEIGHT_OF_HAND, SPOT_HIDDEN, HAMMERS, CRAFTING, BRAWLING, SWORDS, AXES, HUNTING_AND_FISHING, BOWS,
                    SLINGS, SNEAKING, AWARENESS, BUSHCRAFT, CROSSBOWS, SPEARS, BEAST_LORE, HEALING, ANIMALISM, STAVES,
                    ELEMENTALISM, MENTALISM, BARTERING, RIDING, SWIMMING, SEAMANSHIP)
-from dice import pick_n_unique
+from dice import pick_n_unique, d6, d8, d10, d12
 from ability import (MUSICIAN, TANNER, SMITH, CARPENTER, COMPANION, COMBAT_EXPERIENCE, INTUITION, TREASURE_HUNTER,
                      CHAMPION, SEA_LEGS, BACKSTAB)
+from item import (LYRE, KNIFE, OIL_LAMP, LAMP_OIL, TINDER_BOX, FOOD, SILVER_COIN, FLUTE,
+                  DAGGER, ROPE, TORCH, BRASS_HORN, WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, HAND_AXE,
+                  CARPENTRY_TOOLS, LEATHER_TOOLS, STORM_LANTERN, SHORT_BOW, QUIVER, SLEEPING_TRAP, SNARE, LONG_BOW,
+                  FISHING_ROD, SLING, BROAD_SWORD, BATTLE_AXE, MORNING_STAR, SMALL_SHIELD, CHAINMAIL_ARMOR, SHORT_SPEAR,
+                  SHORT_SWORD, LIGHT_CROSSBOW, LONG_SPEAR, STUDDED_LEATHER_ARMOR, OPEN_HELMET, WOODEN_STAFF, NOTEBOOK,
+                  QUILL_PEN, BOOK, DRESSING, SLEEPING_POTION, CRYSTAL_BALL, SPELL_BOOK, WAND, AMULET, DONKEY,
+                  FIELD_KITCHEN, CART, LARGE_TENT, BACKPACK, PLATE_ARMOR, GREAT_HELMET, FLAIL, LANCE, WAR_HORSE,
+                  GRAPPLING_HOOK, SCIMITAR, TRIDENT, BINOCULARS, SIMPLE_LOCKPICKS, PEBBLES, Item)
 
 
 class Bard:
@@ -16,6 +24,9 @@ class Bard:
     preferred_attribute = CHARISMA
     skills = [BLUFFING, LANGUAGES, ACROBATICS, KNIVES, MYTHS_AND_LEGENDS, EVADE, PERFORMANCE, PERSUASION]
     hero_ability = MUSICIAN
+    item_sets = [[LYRE, KNIFE, OIL_LAMP, LAMP_OIL, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)],
+                 [FLUTE, DAGGER, ROPE, TORCH, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)],
+                 [BRASS_HORN, KNIFE, TORCH, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)]]
 
 
 class Craftsman:
@@ -25,6 +36,18 @@ class Craftsman:
     skills = [SLEIGHT_OF_HAND, SPOT_HIDDEN, HAMMERS, CRAFTING, KNIVES, BRAWLING, SWORDS, AXES]
     heroic_abilities = [TANNER, SMITH, CARPENTER]
     hero_ability = None
+    item_sets = [[WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX, (d8, FOOD), (d8, SILVER_COIN)],
+                 [HAND_AXE, LEATHER_ARMOR, CARPENTRY_TOOLS, TORCH, ROPE, TINDER_BOX, (d8, FOOD), (d8, SILVER_COIN)],
+                 [KNIFE, LEATHER_ARMOR, LEATHER_TOOLS, STORM_LANTERN, LAMP_OIL, TINDER_BOX, (d8, FOOD),
+                  (d8, SILVER_COIN)]]
+
+    def get_preferred_items(self, hero_ability):
+        if hero_ability == SMITH:
+            return self.item_sets[0]
+        elif hero_ability == CARPENTER:
+            return self.item_sets[1]
+        else:
+            return self.item_sets[2]
 
 
 class Hunter:
@@ -33,6 +56,12 @@ class Hunter:
     preferred_attribute = AGILITY
     skills = [ACROBATICS, HUNTING_AND_FISHING, KNIVES, BOWS, SLINGS, SNEAKING, AWARENESS, BUSHCRAFT]
     hero_ability = COMPANION
+    item_sets = [[DAGGER, SHORT_BOW, QUIVER, LEATHER_ARMOR, SLEEPING_TRAP, TORCH, TINDER_BOX, ROPE, SNARE, (d8, FOOD),
+                  (d6, SILVER_COIN)],
+                 [KNIFE, LONG_BOW, QUIVER, LEATHER_ARMOR, SLEEPING_TRAP, TORCH, TINDER_BOX, ROPE, FISHING_ROD,
+                  (d8, FOOD), (d6, SILVER_COIN)],
+                 [DAGGER, SLING, LEATHER_ARMOR, SLEEPING_TRAP, TORCH, TINDER_BOX, ROPE, SNARE, (d8, FOOD),
+                  (d6, SILVER_COIN)]]
 
 
 class Warrior:
@@ -41,6 +70,11 @@ class Warrior:
     preferred_attribute = STRENGTH
     skills = [CROSSBOWS, HAMMERS, BOWS, BRAWLING, SPEARS, SWORDS, EVADE, AXES]
     hero_ability = COMBAT_EXPERIENCE
+    item_sets = [[(BROAD_SWORD, BATTLE_AXE, MORNING_STAR), SMALL_SHIELD, CHAINMAIL_ARMOR, TORCH, TINDER_BOX, (d6, FOOD),
+                  (d6, SILVER_COIN)],
+                 [(SHORT_SWORD, HAND_AXE, SHORT_SPEAR), LIGHT_CROSSBOW, QUIVER, LEATHER_ARMOR, TORCH, TINDER_BOX,
+                  (d6, FOOD), d6, SILVER_COIN],
+                 [LONG_SPEAR, STUDDED_LEATHER_ARMOR, OPEN_HELMET, TORCH, TINDER_BOX, (d6, FOOD), (d6, SILVER_COIN)]]
 
 
 class Scholar:
@@ -49,6 +83,10 @@ class Scholar:
     preferred_attribute = INTELLIGENCE
     skills = [BEAST_LORE, SPOT_HIDDEN, LANGUAGES, HEALING, MYTHS_AND_LEGENDS, EVADE, AWARENESS, BUSHCRAFT]
     hero_ability = INTUITION
+    item_sets = [[WOODEN_STAFF, NOTEBOOK, QUILL_PEN, SLEEPING_TRAP, TORCH, TINDER_BOX, (d6, FOOD), (d10, SILVER_COIN)],
+                 [KNIFE, BOOK, SLEEPING_TRAP, OIL_LAMP, LAMP_OIL, TINDER_BOX, (d6, FOOD), (d10, SILVER_COIN)],
+                 [SHORT_SWORD, (10, DRESSING), SLEEPING_POTION, SLEEPING_TRAP, STORM_LANTERN, LAMP_OIL, TINDER_BOX,
+                  (d6, FOOD), (d10, SILVER_COIN)]]
 
 
 class MageSchool(Enum):
@@ -63,6 +101,9 @@ class Mage:
     preferred_attribute = WILL
     main_school = None
     hero_ability = None
+    item_sets = [[WOODEN_STAFF, CRYSTAL_BALL, SPELL_BOOK, TORCH, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)],
+                 [KNIFE, WAND, SPELL_BOOK, TORCH, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)],
+                 [AMULET, SPELL_BOOK, SLEEPING_TRAP, TORCH, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)]]
 
     @property
     def skills(self):
@@ -83,6 +124,11 @@ class Peddler:
     preferred_attribute = CHARISMA
     skills = [BLUFFING, SLEIGHT_OF_HAND, SPOT_HIDDEN, KNIVES, BARTERING, EVADE, AWARENESS, PERSUASION]
     hero_ability = TREASURE_HUNTER
+    item_sets = [[DAGGER, SLEEPING_TRAP, TORCH, TINDER_BOX, ROPE, DONKEY, (d6, FOOD), (d12, SILVER_COIN)],
+                 [KNIFE, SLEEPING_TRAP, STORM_LANTERN, LAMP_OIL, TINDER_BOX, FIELD_KITCHEN, DONKEY, CART,
+                  (d6, FOOD), (d12, SILVER_COIN)],
+                 [DAGGER, SLEEPING_TRAP, LARGE_TENT, OIL_LAMP, LAMP_OIL, TINDER_BOX, BACKPACK, (d6, FOOD),
+                  (d12, SILVER_COIN)]]
 
 
 class Knight:
@@ -91,6 +137,12 @@ class Knight:
     preferred_attribute = STRENGTH
     skills = [BEAST_LORE, HAMMERS, MYTHS_AND_LEGENDS, RIDING, SPEARS, SWORDS, PERFORMANCE, PERSUASION]
     hero_ability = CHAMPION
+    item_sets = [[(BROAD_SWORD, MORNING_STAR), SMALL_SHIELD, PLATE_ARMOR, GREAT_HELMET, TORCH, TINDER_BOX, (d6, FOOD),
+                  (d12, SILVER_COIN)],
+                 [(FLAIL, WAR_HAMMER_LIGHT), SMALL_SHIELD, CHAINMAIL_ARMOR, OPEN_HELMET, TORCH, TINDER_BOX, (d6, FOOD),
+                  (d12, SILVER_COIN)],
+                 [SHORT_SWORD, LANCE, SMALL_SHIELD, CHAINMAIL_ARMOR, OPEN_HELMET, WAR_HORSE, (d6, FOOD),
+                  (d12, SILVER_COIN)]]
 
 
 class Sailor:
@@ -99,6 +151,10 @@ class Sailor:
     preferred_attribute = AGILITY
     skills = [LANGUAGES, ACROBATICS, HUNTING_AND_FISHING, KNIVES, SWIMMING, SEAMANSHIP, SWORDS, SPOT_HIDDEN]
     hero_ability = SEA_LEGS
+    item_sets = [[DAGGER, SHORT_BOW, QUIVER, ROPE, GRAPPLING_HOOK, SLEEPING_TRAP, TORCH, TINDER_BOX, (d8, FOOD),
+                  (d10, SILVER_COIN)],
+                 [SCIMITAR, LEATHER_ARMOR, ROPE, GRAPPLING_HOOK, TORCH, TINDER_BOX, (d8, FOOD), (d10, SILVER_COIN)],
+                 [TRIDENT, BINOCULARS, ROPE, GRAPPLING_HOOK, TORCH, TINDER_BOX, (d8, FOOD), (d10, SILVER_COIN)]]
 
 
 class Thief:
@@ -107,6 +163,9 @@ class Thief:
     preferred_attribute = AGILITY
     skills = [BLUFFING, KNIVES, SLEIGHT_OF_HAND, SPOT_HIDDEN, ACROBATICS, SNEAKING, EVADE, AWARENESS]
     hero_ability = BACKSTAB
+    item_sets = [[DAGGER, SLING, ROPE, GRAPPLING_HOOK, TORCH, TINDER_BOX, (d6, FOOD), (d10, SILVER_COIN)],
+                 [KNIFE, SIMPLE_LOCKPICKS, TORCH, TINDER_BOX, (d6, FOOD), (d10, SILVER_COIN)],
+                 [DAGGER, DAGGER, PEBBLES, ROPE, TORCH, TINDER_BOX, (d6, FOOD), (d10, SILVER_COIN)]]
 
 
 available_classes = [Bard, Craftsman, Hunter, Warrior, Scholar, Mage, Peddler, Knight, Sailor, Thief]
@@ -120,5 +179,21 @@ def roll_surname(clazz):
     return choice(clazz.suggested_names)
 
 
-def roll_clazz_skills(clazz, number_of_skills):
-    return pick_n_unique(clazz.skills, number_of_skills)
+def roll_clazz_skills(clazz, number_of_skills, desired_skills):
+    desired = []
+    for skill in desired_skills:
+        if skill in clazz.skills and skill not in desired:
+            desired.append(skill)
+
+    return desired + pick_n_unique([x for x in clazz.skills if x not in desired], number_of_skills - len(desired))
+
+
+def roll_items(clazz):
+    items = []
+    starting_items = choice(clazz.item_sets)
+    for item in starting_items:
+        if isinstance(item, tuple) and isinstance(item[0], Item):
+            items.append(choice(item))
+        else:
+            items.append(item)
+    return items

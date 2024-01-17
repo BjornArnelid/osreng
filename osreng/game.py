@@ -1,12 +1,13 @@
 from random import choice
 
 from race import roll_race, roll_first_name
-from clazz import roll_class, roll_surname, roll_clazz_skills, Craftsman
+from clazz import roll_class, roll_surname, roll_clazz_skills, Craftsman, roll_items
 from character_sheet import CharacterSheet
 from age import roll_age
 from attribute import roll_attribute
 from skill import roll_general_skills
 from trait import roll_weakness
+from item import get_desired_skills
 
 
 if __name__ == '__main__':
@@ -16,6 +17,9 @@ if __name__ == '__main__':
     sheet.clazz = roll_class()
     if isinstance(sheet.clazz, Craftsman):
         sheet.hero_abilities.append(choice(Craftsman.heroic_abilities))
+        start_items = sheet.clazz.get_preferred_items(sheet.hero_abilities[0])
+    else:
+        start_items = roll_items(sheet.clazz)
     sheet.age = roll_age()
     sheet.name = roll_first_name(sheet.race) + ' ' + roll_surname(sheet.clazz)
 
@@ -29,9 +33,13 @@ if __name__ == '__main__':
     sheet.shift_max_to_preferred_attribute()
 
     skill_points = sheet.age.number_of_skillpoints
-    class_skills = roll_clazz_skills(sheet.clazz, skill_points[0])
+    desired_skills = get_desired_skills(start_items)
+    class_skills = roll_clazz_skills(sheet.clazz, skill_points[0], desired_skills)
     general_skills = roll_general_skills(class_skills, skill_points[1])
     sheet.set_trained_skills(class_skills + general_skills)
 
     sheet.weakness = roll_weakness()
+
+    sheet.assign_start_items(start_items)
+
     print(sheet)

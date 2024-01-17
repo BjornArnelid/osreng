@@ -1,15 +1,16 @@
 import unittest
-
 from parameterized import parameterized
 
 from race import roll_race, roll_first_name, available_races, Human
-from clazz import roll_class, roll_surname, available_classes, Warrior, Mage, Craftsman
+from clazz import roll_class, roll_surname, available_classes, Warrior, Mage, Craftsman, roll_items
 from age import roll_age, Age
 from character_sheet import CharacterSheet, CharacterError
 from dice import no_die, d4, d6
 from attribute import STRENGTH, CHARISMA, roll_attribute
 from skill import BEAST_LORE, BLUFFING, MENTALISM
 from trait import roll_weakness
+from item import WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX
+
 
 class MyTestCase(unittest.TestCase):
     def test_roll_race(self):
@@ -185,7 +186,22 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(sheet.hero_abilities, "Class {} should have hero ability".format(sheet.clazz.name))
 
     def test_roll_weakness(self):
-        self.assertTrue(roll_weakness())
+        self.assertTrue(roll_weakness(), "Weakness should not be empty")
+
+    @parameterized.expand(available_classes)
+    def test_roll_items(self, Clazz):
+        clazz = Clazz()
+        self.assertTrue(roll_items(clazz), "Items not found for {}".format(clazz.name))
+
+    def test_assign_items(self):
+        sheet = CharacterSheet()
+        sheet.clazz = Craftsman()
+        sheet.assign_start_items(sheet.clazz.item_sets[0])
+        self.assertEqual(sheet.weapons[0], WAR_HAMMER_LIGHT)
+        self.assertEqual(sheet.armor[0], LEATHER_ARMOR)
+        for item in [FORGING_TOOLS, TORCH, TINDER_BOX]:
+            self.assertTrue(item in sheet.items, "item {} missing in inventory".format(item.name))
+        self.assertTrue(sheet.money > 0, "Character should have starting money")
 
 
 if __name__ == '__main__':
