@@ -14,7 +14,7 @@ if __name__ == '__main__':
     print('Creating random character')
     sheet = CharacterSheet()
     sheet.race = roll_race()
-    sheet.clazz = Mage()
+    sheet.clazz = roll_class()
     if isinstance(sheet.clazz, Craftsman):
         sheet.hero_abilities.append(choice(Craftsman.heroic_abilities))
         start_items = sheet.clazz.get_preferred_items(sheet.hero_abilities[0])
