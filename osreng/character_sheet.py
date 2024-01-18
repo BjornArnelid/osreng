@@ -23,6 +23,7 @@ class CharacterSheet:
         self.weapons = []
         self.armor = []
         self.items = []
+        self.keepsake = None
 
     @property
     def race(self):
@@ -221,7 +222,8 @@ class CharacterSheet:
                 character_string += "{}: {}, ".format(attribute_names[attribute_index], self._get_attribute(attribute_index))
             character_string += "\nFörflyttning: {}".format(self.movement_speed)
             character_string += "\nSkadebonus styrka: {}, Skadebonus smidighet: {}".format(to_die_string(self.calculate_bonus_damage(STRENGTH)), to_die_string(self.calculate_bonus_damage(AGILITY)))
-            character_string += "\nKroppspoäng: {}, Viljepoäng: {}".format(self.hitpoints, self.mana)
+            character_string += "\nKroppspoäng: [{} / {}], Viljepoäng: [{} / {}]".format(self.hitpoints[0], self.hitpoints[1],
+                                                                                         self.mana[0], self.mana[1])
 
         if self.trained_skills:
             character_string += "\n\nFärdigheter\n"
@@ -245,6 +247,11 @@ class CharacterSheet:
         if self.weakness:
             character_string += "\n\nSvaghet: {}".format(self.weakness)
 
+        if self.looks:
+            character_string += "\nUtseende: "
+            for look in self.looks:
+                character_string += look + ", "
+
         if self.weapons:
             character_string += "\n\nVapen:"
             for weapon in self.weapons:
@@ -259,6 +266,9 @@ class CharacterSheet:
             character_string += "\n\nUtrustning:"
             for item in self.items:
                 character_string += "\n{}".format(item)
+
+        if self.keepsake:
+            character_string += "\n\nMinnessak: {}".format(self.keepsake)
 
         return character_string
 

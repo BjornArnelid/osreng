@@ -15,7 +15,7 @@ from item import (LYRE, KNIFE, OIL_LAMP, LAMP_OIL, TINDER_BOX, FOOD, SILVER_COIN
                   SHORT_SWORD, LIGHT_CROSSBOW, LONG_SPEAR, STUDDED_LEATHER_ARMOR, OPEN_HELMET, WOODEN_STAFF, NOTEBOOK,
                   QUILL_PEN, BOOK, DRESSING, SLEEPING_POTION, CRYSTAL_BALL, SPELL_BOOK, WAND, AMULET, DONKEY,
                   FIELD_KITCHEN, CART, LARGE_TENT, BACKPACK, PLATE_ARMOR, GREAT_HELMET, FLAIL, LANCE, WAR_HORSE,
-                  GRAPPLING_HOOK, SCIMITAR, TRIDENT, BINOCULARS, SIMPLE_LOCKPICKS, PEBBLES, Item)
+                  GRAPPLING_HOOK, SCIMITAR, TRIDENT, BINOCULARS, SIMPLE_LOCKPICKS, PEBBLES, Item, Weapon)
 
 
 class Bard:
@@ -73,7 +73,7 @@ class Warrior:
     item_sets = [[(BROAD_SWORD, BATTLE_AXE, MORNING_STAR), SMALL_SHIELD, CHAINMAIL_ARMOR, TORCH, TINDER_BOX, (d6, FOOD),
                   (d6, SILVER_COIN)],
                  [(SHORT_SWORD, HAND_AXE, SHORT_SPEAR), LIGHT_CROSSBOW, QUIVER, LEATHER_ARMOR, TORCH, TINDER_BOX,
-                  (d6, FOOD), d6, SILVER_COIN],
+                  (d6, FOOD), (d6, SILVER_COIN)],
                  [LONG_SPEAR, STUDDED_LEATHER_ARMOR, OPEN_HELMET, TORCH, TINDER_BOX, (d6, FOOD), (d6, SILVER_COIN)]]
 
 
@@ -192,7 +192,7 @@ def roll_items(clazz):
     items = []
     starting_items = choice(clazz.item_sets)
     for item in starting_items:
-        if isinstance(item, tuple) and isinstance(item[0], Item):
+        if isinstance(item, tuple) and isinstance(item[0], (Item, Weapon)):
             items.append(choice(item))
         else:
             items.append(item)

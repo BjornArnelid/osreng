@@ -9,7 +9,7 @@ from dice import no_die, d4, d6
 from attribute import STRENGTH, CHARISMA, roll_attribute
 from skill import BEAST_LORE, BLUFFING, MENTALISM
 from trait import roll_weakness
-from item import WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX
+from item import WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX, LONG_SPEAR
 
 
 class MyTestCase(unittest.TestCase):
@@ -202,6 +202,18 @@ class MyTestCase(unittest.TestCase):
         for item in [FORGING_TOOLS, TORCH, TINDER_BOX]:
             self.assertTrue(item in sheet.items, "item {} missing in inventory".format(item.name))
         self.assertTrue(sheet.money > 0, "Character should have starting money")
+
+    def test_choice_in_items(self):
+        sheet = CharacterSheet()
+        sheet.clazz = Warrior()
+        sheet.assign_start_items(roll_items(sheet.clazz))
+        number_of_weapons = len(sheet.weapons)
+        if number_of_weapons == 2:
+            self.assertFalse(LONG_SPEAR in sheet.weapons, "Unexpectedly found long spear among weapons")
+        elif number_of_weapons == 1:
+            self.assertEqual(LONG_SPEAR,  sheet.weapons[0])
+        else:
+            self.fail("Wrong number of weapons")
 
 
 if __name__ == '__main__':

@@ -26,6 +26,8 @@ class Age(Enum):
             return [6, 4]
         else:
             return [6, 6]
+
+
 def roll_age():
     dice_roll = d6()
     if dice_roll <= 3:
