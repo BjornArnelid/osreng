@@ -1,4 +1,3 @@
-from random import choice
 from dice import d12
 
 
@@ -72,7 +71,3 @@ def roll_race():
 
     if dice_roll == 12:
         return Wolf()
-
-
-def roll_first_name(race):
-    return choice(race.suggested_names)

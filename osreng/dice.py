@@ -1,6 +1,41 @@
 import random
 
 
+class Random:
+    name = "Slumpmässigt"
+
+    def roll(self):
+        raise "Not implemented!"
+
+
+class RandomFunction(Random):
+    def __init__(self, roll_function, function_input=None):
+        self.roll_function = roll_function
+        self.function_input = function_input
+
+    def roll(self):
+        if self.function_input:
+            return self.roll_function(self.function_input)
+        else:
+            return self.roll_function()
+
+
+class RandomList(Random):
+    def __init__(self, roll_list):
+        self.roll_list = roll_list
+
+    def roll(self):
+        return random.choice(self.roll_list)
+
+
+class RandomSpecific(Random):
+    def __init__(self, specific_input):
+        self.specific_input = specific_input
+
+    def roll(self):
+        return self.specific_input
+
+
 def d12():
     return random.randint(1, 12)
 
@@ -25,14 +60,6 @@ def no_die():
     return 0
 
 
-def pick_n_unique(original_list, number_of_picks):
-    options_left = original_list.copy()
-    picked = []
-    for _ in range(number_of_picks):
-        picked.append(options_left.pop(random.randint(0, len(options_left) - 1)))
-    return picked
-
-
 def to_die_string(die_function):
     if die_function == no_die:
         return "----"
@@ -46,4 +73,3 @@ def to_die_string(die_function):
         return "T10"
     elif die_function == d12:
         return "T12"
-

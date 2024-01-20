@@ -1,7 +1,3 @@
-from random import choice
-
-from dice import pick_n_unique
-
 suggested_weaknesses = ['Godtrogen', 'Girig', 'Lättkränkt', 'Dumdristig', 'Räddhågsen', 'Monsterhatare', 'Intolerant',
                         'Lättjefull', 'Matglad', 'Kleptoman', 'Fåfäng', 'Våghals', 'Arkanofob', 'Bokmal', 'Vilde',
                         'Skrävlare', 'Våldsam', 'Besserwisser', 'Pessimist', 'Högfärdig']
@@ -17,19 +13,8 @@ suggested_keepsakes = ['Dina trogna gamla skor', 'En enkel silvermedaljong',
                        'En fjäder från en grip', 'En välsnidad pipa']
 
 suggested_looks = ['Fult ärr över kinden', 'Märklig huvudbonad', 'Onormalt blek och glåmig',
-                  'Ständigt ett leende på läpparna', 'Iskall och genomträngande blick', 'Några extra kilon runt midjan',
-                  'Mager och senig', 'Onormalt kraftig kroppsbehåring', 'Mycket tunnhårig', 'Framträdande tatuering',
-                  'Luktar illa', 'Storslagen frisyr', 'Haltande gång', 'Lortig', 'Ärliga blå ögon', 'Tand av silver',
-                  'Välparfymerad', 'Olika ögonfärg', 'Väsande röst', 'Väderbitet ansikte']
-
-
-def roll_weakness():
-    return choice(suggested_weaknesses)
-
-
-def roll_keepsake():
-    return choice(suggested_keepsakes)
-
-
-def roll_looks(n=1):
-    return pick_n_unique(suggested_looks, n)
+                   'Ständigt ett leende på läpparna', 'Iskall och genomträngande blick',
+                   'Några extra kilon runt midjan', 'Mager och senig', 'Onormalt kraftig kroppsbehåring',
+                   'Mycket tunnhårig', 'Framträdande tatuering', 'Luktar illa', 'Storslagen frisyr', 'Haltande gång',
+                   'Lortig', 'Ärliga blå ögon', 'Tand av silver', 'Välparfymerad', 'Olika ögonfärg', 'Väsande röst',
+                   'Väderbitet ansikte']

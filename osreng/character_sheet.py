@@ -1,8 +1,8 @@
 from race import available_races
 from clazz import available_classes
-from age import Age, print_age
-from attribute import (STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA, attribute_names,
-                       calculate_movement_modifier, calculate_bonus_damage, calculate_skill_base_chance)
+from age import available_ages
+from attribute import (STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA, calculate_movement_modifier,
+                       calculate_bonus_damage, calculate_skill_base_chance)
 from dice import to_die_string
 from skill import TrainedSkill
 from item import Weapon, Armor, MultiItem, SILVER_COIN, calculate_item_amounts
@@ -24,6 +24,7 @@ class CharacterSheet:
         self.armor = []
         self.items = []
         self.keepsake = None
+        self.looks = []
 
     @property
     def race(self):
@@ -31,7 +32,9 @@ class CharacterSheet:
 
     @race.setter
     def race(self, race):
-        if any(isinstance(race, cls) for cls in available_races):
+        if not race:
+            return
+        elif any(isinstance(race, cls) for cls in available_races):
             self._race = race
         else:
             raise CharacterError("{} is not an acceptable race".format(race))
@@ -42,7 +45,9 @@ class CharacterSheet:
 
     @clazz.setter
     def clazz(self, clazz):
-        if any(isinstance(clazz, cls) for cls in available_classes):
+        if not clazz:
+            return
+        elif any(isinstance(clazz, cls) for cls in available_classes):
             self._clazz = clazz
             hero_ability = clazz.hero_ability
             if hero_ability:
@@ -56,16 +61,33 @@ class CharacterSheet:
 
     @age.setter
     def age(self, age):
-        if age in [*Age]:
+        if not age:
+            return
+        elif any(isinstance(age, cls) for cls in available_ages):
             self._age = age
         else:
             raise CharacterError("{} is not an acceptable age".format(age))
 
-    def _get_attribute(self, attribute):
-        adjustment = self.age.adjust_for_age(attribute) if self.age else 0
-        return self._attributes[attribute] + adjustment
+    def get_attribute(self, attribute):
+        if attribute == STRENGTH:
+            return self.strength
+        elif attribute == CONSTITUTION:
+            return self.constitution
+        elif attribute == AGILITY:
+            return self.agility
+        elif attribute == INTELLIGENCE:
+            return self.intelligence
+        elif attribute == WILL:
+            return self.will
+        elif attribute == CHARISMA:
+            return self.charisma
+        else:
+            raise CharacterError("unknown attribute")
 
-    def _set_attribute(self, attribute, value):
+    def get_raw_attribute(self, attribute):
+        return self._attributes[attribute]
+
+    def set_attribute(self, attribute, value):
         if int(value) == value:
             if not self._attributes:
                 self._attributes = [None] * 6
@@ -82,56 +104,61 @@ class CharacterSheet:
 
     @property
     def strength(self):
-        return self._get_attribute(STRENGTH)
+        adjustment = self.age.adjust_for_age(STRENGTH) if self.age else 0
+        return _adjust_attribute_to_limits(self.get_raw_attribute(STRENGTH) + adjustment)
 
     @strength.setter
     def strength(self, value):
-        self._set_attribute(STRENGTH, value)
+        self.set_attribute(STRENGTH, value)
 
     @property
     def constitution(self):
-        return self._get_attribute(CONSTITUTION)
+        adjustment = self.age.adjust_for_age(CONSTITUTION) if self.age else 0
+        return _adjust_attribute_to_limits(self.get_raw_attribute(CONSTITUTION) + adjustment)
 
     @constitution.setter
     def constitution(self, value):
-        self._set_attribute(CONSTITUTION, value)
-
+        self.set_attribute(CONSTITUTION, value)
 
     @property
-    def dexterity(self):
-        return self._get_attribute(AGILITY)
+    def agility(self):
+        adjustment = self.age.adjust_for_age(AGILITY) if self.age else 0
+        return _adjust_attribute_to_limits(self.get_raw_attribute(AGILITY) + adjustment)
 
-    @dexterity.setter
-    def dexterity(self, value):
-        self._set_attribute(AGILITY, value)
+    @agility.setter
+    def agility(self, value):
+        self.set_attribute(AGILITY, value)
 
     @property
     def intelligence(self):
-        return self._get_attribute(INTELLIGENCE)
+        adjustment = self.age.adjust_for_age(INTELLIGENCE) if self.age else 0
+        return _adjust_attribute_to_limits(self.get_raw_attribute(INTELLIGENCE) + adjustment)
 
     @intelligence.setter
     def intelligence(self, value):
-        self._set_attribute(INTELLIGENCE, value)
+        self.set_attribute(INTELLIGENCE, value)
 
     @property
     def will(self):
-        return self._get_attribute(WILL)
+        adjustment = self.age.adjust_for_age(WILL) if self.age else 0
+        return _adjust_attribute_to_limits(self.get_raw_attribute(WILL) + adjustment)
 
     @will.setter
     def will(self, value):
-        self._set_attribute(WILL, value)
+        self.set_attribute(WILL, value)
 
     @property
     def charisma(self):
-        return self._get_attribute(CHARISMA)
+        adjustment = self.age.adjust_for_age(CHARISMA) if self.age else 0
+        return _adjust_attribute_to_limits(self.get_raw_attribute(CHARISMA) + adjustment)
 
     @charisma.setter
     def charisma(self, value):
-        self._set_attribute(CHARISMA, value)
+        self.set_attribute(CHARISMA, value)
 
     @property
     def movement_speed(self):
-        return self.race.base_speed + calculate_movement_modifier(self.dexterity)
+        return self.race.base_speed + calculate_movement_modifier(self.agility)
 
     @property
     def hitpoints(self):
@@ -163,12 +190,12 @@ class CharacterSheet:
             self._mana[0] += new_value
 
     def calculate_bonus_damage(self, damage_attribute):
-        return calculate_bonus_damage(self._get_attribute(damage_attribute))
+        return calculate_bonus_damage(self.get_attribute(damage_attribute))
 
     def switch_attributes(self, first, second):
-        first_value = self._get_attribute(first)
-        self._set_attribute(first, self._get_attribute(second))
-        self._set_attribute(second, first_value)
+        first_value = self.get_raw_attribute(first)
+        self.set_attribute(first, self.get_raw_attribute(second))
+        self.set_attribute(second, first_value)
 
     def shift_max_to_preferred_attribute(self):
         if not self.clazz:
@@ -180,7 +207,7 @@ class CharacterSheet:
 
     def set_trained_skills(self, skills_to_train):
         for skill in skills_to_train:
-            base_chance = calculate_skill_base_chance(self._get_attribute(skill.skill_attribute))
+            base_chance = calculate_skill_base_chance(self.get_attribute(skill.skill_attribute))
             self.trained_skills.append(TrainedSkill(base_chance * 2,  skill))
 
     def get_skill_value(self, skill):
@@ -189,7 +216,7 @@ class CharacterSheet:
                 return trained.skill_value
 
         if skill.base_skill:
-            return calculate_skill_base_chance(self._get_attribute(skill.skill_attribute))
+            return calculate_skill_base_chance(self.get_attribute(skill.skill_attribute))
         else:
             return 0
 
@@ -214,12 +241,12 @@ class CharacterSheet:
             character_string += "\nYrke: " + self.clazz.name
 
         if self.age:
-            character_string += "\nÅlder: " + print_age(self.age)
+            character_string += "\nÅlder: " + self.age.name
 
         if self._attributes:
-            character_string += "\n\nGrundegenskaper\n"
-            for attribute_index in range(6):
-                character_string += "{}: {}, ".format(attribute_names[attribute_index], self._get_attribute(attribute_index))
+            character_string += "\n\nGrundegenskaper"
+            character_string += "\nStyrka: {}, Fysik: {}, Smidighet: {}, Intelligens: {}, Psyke: {}, Karisma: {}, ".format(
+                self.strength, self.constitution, self.agility, self.intelligence, self.will, self.charisma)
             character_string += "\nFörflyttning: {}".format(self.movement_speed)
             character_string += "\nSkadebonus styrka: {}, Skadebonus smidighet: {}".format(to_die_string(self.calculate_bonus_damage(STRENGTH)), to_die_string(self.calculate_bonus_damage(AGILITY)))
             character_string += "\nKroppspoäng: [{} / {}], Viljepoäng: [{} / {}]".format(self.hitpoints[0], self.hitpoints[1],
@@ -271,6 +298,15 @@ class CharacterSheet:
             character_string += "\n\nMinnessak: {}".format(self.keepsake)
 
         return character_string
+
+
+def _adjust_attribute_to_limits(attribute):
+    if attribute < 3:
+        return 3
+    elif attribute > 18:
+        return 18
+    else:
+        return attribute
 
 
 class CharacterError(Exception):

@@ -5,7 +5,7 @@ from skill import (BLUFFING, LANGUAGES, ACROBATICS, KNIVES, MYTHS_AND_LEGENDS, E
                    SLEIGHT_OF_HAND, SPOT_HIDDEN, HAMMERS, CRAFTING, BRAWLING, SWORDS, AXES, HUNTING_AND_FISHING, BOWS,
                    SLINGS, SNEAKING, AWARENESS, BUSHCRAFT, CROSSBOWS, SPEARS, BEAST_LORE, HEALING, ANIMALISM, STAVES,
                    ELEMENTALISM, MENTALISM, BARTERING, RIDING, SWIMMING, SEAMANSHIP)
-from dice import pick_n_unique, d6, d8, d10, d12
+from dice import d6, d8, d10, d12
 from ability import (MUSICIAN, TANNER, SMITH, CARPENTER, COMPANION, COMBAT_EXPERIENCE, INTUITION, TREASURE_HUNTER,
                      CHAMPION, SEA_LEGS, BACKSTAB)
 from item import (LYRE, KNIFE, OIL_LAMP, LAMP_OIL, TINDER_BOX, FOOD, SILVER_COIN, FLUTE,
@@ -35,7 +35,7 @@ class Craftsman:
     preferred_attribute = STRENGTH
     skills = [SLEIGHT_OF_HAND, SPOT_HIDDEN, HAMMERS, CRAFTING, KNIVES, BRAWLING, SWORDS, AXES]
     heroic_abilities = [TANNER, SMITH, CARPENTER]
-    hero_ability = None
+    hero_ability = (TANNER, SMITH, CARPENTER)
     item_sets = [[WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX, (d8, FOOD), (d8, SILVER_COIN)],
                  [HAND_AXE, LEATHER_ARMOR, CARPENTRY_TOOLS, TORCH, ROPE, TINDER_BOX, (d8, FOOD), (d8, SILVER_COIN)],
                  [KNIFE, LEATHER_ARMOR, LEATHER_TOOLS, STORM_LANTERN, LAMP_OIL, TINDER_BOX, (d8, FOOD),
@@ -173,19 +173,6 @@ available_classes = [Bard, Craftsman, Hunter, Warrior, Scholar, Mage, Peddler, K
 
 def roll_class():
     return choice(available_classes)()
-
-
-def roll_surname(clazz):
-    return choice(clazz.suggested_names)
-
-
-def roll_clazz_skills(clazz, number_of_skills, desired_skills):
-    desired = []
-    for skill in desired_skills:
-        if skill in clazz.skills and skill not in desired:
-            desired.append(skill)
-
-    return desired + pick_n_unique([x for x in clazz.skills if x not in desired], number_of_skills - len(desired))
 
 
 def roll_items(clazz):

@@ -1,21 +1,20 @@
 import unittest
 from parameterized import parameterized
 
-from race import roll_race, roll_first_name, available_races, Human
-from clazz import roll_class, roll_surname, available_classes, Warrior, Mage, Craftsman, roll_items
-from age import roll_age, Age
+from race import roll_race, available_races, Human
+from clazz import roll_class, available_classes, Warrior, Mage, Craftsman, roll_items
+from age import roll_age, available_ages, Young, MiddleAged, Old
 from character_sheet import CharacterSheet, CharacterError
 from dice import no_die, d4, d6
 from attribute import STRENGTH, CHARISMA, roll_attribute
 from skill import BEAST_LORE, BLUFFING, MENTALISM
-from trait import roll_weakness
 from item import WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX, LONG_SPEAR
 
 
 class MyTestCase(unittest.TestCase):
     def test_roll_race(self):
-        race = roll_race()
-        self.assertTrue(any(isinstance(race, cls) for cls in available_races))
+        rolled_race = roll_race()
+        self.assertTrue(any(isinstance(rolled_race, cls) for cls in available_races))
 
     def test_set_race_manually(self):
         sheet = CharacterSheet()
@@ -26,13 +25,13 @@ class MyTestCase(unittest.TestCase):
 
     def test_race_attributes(self):
         for Race in available_races:
-            race = Race()
-            self.assertIsNotNone(race.traits)
-            self.assertIsNotNone(race.suggested_names)
+            test_race = Race()
+            self.assertIsNotNone(test_race.traits)
+            self.assertIsNotNone(test_race.suggested_names)
 
     def test_roll_class(self):
-        clazz = roll_class()
-        self.assertTrue(any(isinstance(clazz, cls) for cls in available_classes))
+        rolled_clazz = roll_class()
+        self.assertTrue(any(isinstance(rolled_clazz, cls) for cls in available_classes))
 
     def test_set_class_manually(self):
         sheet = CharacterSheet()
@@ -47,21 +46,15 @@ class MyTestCase(unittest.TestCase):
             self.assertIsNotNone(clazz.suggested_names)
 
     def test_roll_age(self):
-        age = roll_age()
-        self.assertTrue(age in [*Age])
+        rolled_age = roll_age()
+        self.assertTrue(any(isinstance(rolled_age, cls) for cls in available_ages))
 
     def test_set_age_manually(self):
         sheet = CharacterSheet()
         with self.assertRaises(CharacterError):
             sheet.age = 2
-        sheet.age = Age.MiddleAged
-        self.assertEqual(Age.MiddleAged, sheet.age)
-
-    def test_roll_name(self):
-        for Race in available_races:
-            self.assertIsNotNone(roll_first_name(Race()))
-        for Clazz in available_classes:
-            self.assertIsNotNone(roll_surname(Clazz()))
+        sheet.age = MiddleAged()
+        self.assertTrue(isinstance(sheet.age, MiddleAged))
 
     def test_roll_attribute(self):
         attribute = roll_attribute()
@@ -73,29 +66,29 @@ class MyTestCase(unittest.TestCase):
         sheet.clazz = Clazz()
         sheet.strength = roll_attribute()
         sheet.constitution = roll_attribute()
-        sheet.dexterity = roll_attribute()
+        sheet.agility = roll_attribute()
         sheet.intelligence = roll_attribute()
         sheet.will = roll_attribute()
         sheet.charisma = roll_attribute()
         sheet.shift_max_to_preferred_attribute()
-        self.assertEqual(sheet._get_attribute(sheet.clazz.preferred_attribute), max(sheet._attributes))
+        self.assertEqual(sheet.get_raw_attribute(sheet.clazz.preferred_attribute), max(sheet._attributes))
 
     def test_adjust_for_age(self):
         sheet = CharacterSheet()
         sheet._attributes = [11, 11, 11, 11, 11, 11]
         self.assertEqual(11, sheet.charisma)
 
-        sheet.age = Age.Young
-        self.assertEqual(12, sheet.dexterity)
+        sheet.age = Young()
+        self.assertEqual(12, sheet.agility)
         self.assertEqual(12, sheet.constitution)
 
-        sheet.age = Age.MiddleAged
-        self.assertEqual(11, sheet.dexterity)
+        sheet.age = MiddleAged()
+        self.assertEqual(11, sheet.agility)
         self.assertEqual(11, sheet.constitution)
 
-        sheet.age = Age.Old
+        sheet.age = Old()
         self.assertEqual(9, sheet.strength)
-        self.assertEqual(9, sheet.dexterity)
+        self.assertEqual(9, sheet.agility)
         self.assertEqual(9, sheet.constitution)
         self.assertEqual(12, sheet.intelligence)
         self.assertEqual(12, sheet.will)
@@ -111,26 +104,26 @@ class MyTestCase(unittest.TestCase):
     def test_get_movement_speed_for_races(self, Race):
         sheet = CharacterSheet()
         sheet.race = Race()
-        sheet.dexterity = 11
+        sheet.agility = 11
         self.assertTrue(0 < sheet.movement_speed < 20)
 
     def test_adjust_speed_with_dexterity(self):
         sheet = CharacterSheet()
         sheet.race = Human()
 
-        sheet.dexterity = 6
+        sheet.agility = 6
         self.assertEqual(6, sheet.movement_speed)
 
-        sheet.dexterity = 7
+        sheet.agility = 7
         self.assertEqual(8, sheet.movement_speed)
 
-        sheet.dexterity = 11
+        sheet.agility = 11
         self.assertEqual(10, sheet.movement_speed)
 
-        sheet.dexterity = 13
+        sheet.agility = 13
         self.assertEqual(12, sheet.movement_speed)
 
-        sheet.dexterity = 16
+        sheet.agility = 16
         self.assertEqual(14, sheet.movement_speed)
 
     def test_calculate_bonus_damage(self):
@@ -166,7 +159,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_trained_skills(self):
         sheet = CharacterSheet()
-        sheet.age = Age.Young
+        sheet.age = Young()
         sheet.intelligence = 11
         sheet.set_trained_skills([BEAST_LORE])
         self.assertEqual(10, sheet.get_skill_value(BEAST_LORE))
@@ -180,13 +173,10 @@ class MyTestCase(unittest.TestCase):
     def test_starting_abilities(self, Clazz):
         sheet = CharacterSheet()
         sheet.clazz = Clazz()
-        if isinstance(sheet.clazz, Mage) or isinstance(sheet.clazz, Craftsman):
+        if isinstance(sheet.clazz, Mage):
             self.assertFalse(sheet.hero_abilities, "Clazz {} should not have default assigned hero abilities .")
         else:
             self.assertTrue(sheet.hero_abilities, "Class {} should have hero ability".format(sheet.clazz.name))
-
-    def test_roll_weakness(self):
-        self.assertTrue(roll_weakness(), "Weakness should not be empty")
 
     @parameterized.expand(available_classes)
     def test_roll_items(self, Clazz):
