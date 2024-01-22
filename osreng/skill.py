@@ -2,8 +2,7 @@ from attribute import INTELLIGENCE, CHARISMA, AGILITY, STRENGTH
 
 
 class Skill:
-    def __init__(self, index, name, attribute, base):
-        self.index = index
+    def __init__(self, name, attribute, base):
         self.name = name
         self.skill_attribute = attribute
         self.base_skill = base
@@ -15,71 +14,71 @@ class TrainedSkill:
         self.skill = skill
 
 
-BEAST_LORE = Skill(0, 'Bestiologi', INTELLIGENCE, True)
+BEAST_LORE = Skill('Bestiologi', INTELLIGENCE, True)
 
-BLUFFING = Skill(1, 'Bluffa', CHARISMA, True)
+BLUFFING = Skill('Bluffa', CHARISMA, True)
 
-SLEIGHT_OF_HAND = Skill(2, 'Fingerfärdighet', AGILITY, True)
+SLEIGHT_OF_HAND = Skill('Fingerfärdighet', AGILITY, True)
 
-SPOT_HIDDEN = Skill(3, "Finna dolda ting", INTELLIGENCE, True)
+SPOT_HIDDEN = Skill("Finna dolda ting", INTELLIGENCE, True)
 
-LANGUAGES = Skill(4, "Främmande språk", INTELLIGENCE, True)
+LANGUAGES = Skill("Främmande språk", INTELLIGENCE, True)
 
-CRAFTING = Skill(5, "Hantverk", STRENGTH, True)
+CRAFTING = Skill("Hantverk", STRENGTH, True)
 
-ACROBATICS = Skill(6, "Hoppa & klättra", AGILITY, True)
+ACROBATICS = Skill("Hoppa & klättra", AGILITY, True)
 
-HUNTING_AND_FISHING = Skill(7, "Jakt & fiske", AGILITY, True)
+HUNTING_AND_FISHING = Skill("Jakt & fiske", AGILITY, True)
 
-BARTERING = Skill(8, "Köpslå", CHARISMA, True)
+BARTERING = Skill("Köpslå", CHARISMA, True)
 
-HEALING = Skill(9, "Läkekonst", INTELLIGENCE, True)
+HEALING = Skill("Läkekonst", INTELLIGENCE, True)
 
-MYTHS_AND_LEGENDS = Skill(10, "Myter & legender", INTELLIGENCE, True)
+MYTHS_AND_LEGENDS = Skill("Myter & legender", INTELLIGENCE, True)
 
-RIDING = Skill(11, "Rida", AGILITY, True)
+RIDING = Skill("Rida", AGILITY, True)
 
-SWIMMING = Skill(12, "Simma", AGILITY, True)
+SWIMMING = Skill("Simma", AGILITY, True)
 
-SEAMANSHIP = Skill(13, "Sjökunnighet", INTELLIGENCE, True)
+SEAMANSHIP = Skill("Sjökunnighet", INTELLIGENCE, True)
 
-SNEAKING = Skill(14, "Smyga", AGILITY, True)
+SNEAKING = Skill("Smyga", AGILITY, True)
 
-EVADE = Skill(15, "Undvika", AGILITY, True)
+EVADE = Skill("Undvika", AGILITY, True)
 
-PERFORMANCE = Skill(16, "Uppträda", CHARISMA, True)
+PERFORMANCE = Skill("Uppträda", CHARISMA, True)
 
-AWARENESS = Skill(17, "Upptäcka fara", INTELLIGENCE, True)
+AWARENESS = Skill("Upptäcka fara", INTELLIGENCE, True)
 
-BUSHCRAFT = Skill(18, "Vildmarksvana", INTELLIGENCE, True)
+BUSHCRAFT = Skill("Vildmarksvana", INTELLIGENCE, True)
 
-PERSUASION = Skill(19, "Övertala", CHARISMA, True)
+PERSUASION = Skill("Övertala", CHARISMA, True)
 
-CROSSBOWS = Skill(20, "Armborst", AGILITY, True)
+CROSSBOWS = Skill("Armborst", AGILITY, True)
 
-HAMMERS = Skill(21, "Hammare", STRENGTH, True)
+HAMMERS = Skill("Hammare", STRENGTH, True)
 
-KNIVES = Skill(22, "Kniv", AGILITY, True)
+KNIVES = Skill("Kniv", AGILITY, True)
 
-BOWS = Skill(23, "Pilbåge", AGILITY, True)
+BOWS = Skill("Pilbåge", AGILITY, True)
 
-BRAWLING = Skill(24, "Slagsmål", STRENGTH, True)
+BRAWLING = Skill("Slagsmål", STRENGTH, True)
 
-SLINGS = Skill(25, "Slunga", AGILITY, True)
+SLINGS = Skill("Slunga", AGILITY, True)
 
-SPEARS = Skill(26, "Spjut", STRENGTH, True)
+SPEARS = Skill("Spjut", STRENGTH, True)
 
-STAVES = Skill(27, "Stav", STRENGTH, True)
+STAVES = Skill("Stav", STRENGTH, True)
 
-SWORDS = Skill(28, "Svärd", STRENGTH, True)
+SWORDS = Skill("Svärd", STRENGTH, True)
 
-AXES = Skill(29, "Yxa", STRENGTH, True)
+AXES = Skill("Yxa", STRENGTH, True)
 
-ANIMALISM = Skill(30, "Animalism", INTELLIGENCE, False)
+ANIMALISM = Skill("Animalism", INTELLIGENCE, False)
 
-ELEMENTALISM = Skill(31, "Elementalism", INTELLIGENCE, False)
+ELEMENTALISM = Skill("Elementalism", INTELLIGENCE, False)
 
-MENTALISM = Skill(32, "Mentalism", INTELLIGENCE, False)
+MENTALISM = Skill("Mentalism", INTELLIGENCE, False)
 
 
 base_skills = [BEAST_LORE, BLUFFING, SLEIGHT_OF_HAND, SPOT_HIDDEN, LANGUAGES, CRAFTING, ACROBATICS,

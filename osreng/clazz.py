@@ -1,5 +1,5 @@
 from random import choice
-from enum import Enum, auto
+
 from attribute import STRENGTH, AGILITY, INTELLIGENCE, WILL, CHARISMA
 from skill import (BLUFFING, LANGUAGES, ACROBATICS, KNIVES, MYTHS_AND_LEGENDS, EVADE, PERFORMANCE, PERSUASION,
                    SLEIGHT_OF_HAND, SPOT_HIDDEN, HAMMERS, CRAFTING, BRAWLING, SWORDS, AXES, HUNTING_AND_FISHING, BOWS,
@@ -16,6 +16,7 @@ from item import (LYRE, KNIFE, OIL_LAMP, LAMP_OIL, TINDER_BOX, FOOD, SILVER_COIN
                   QUILL_PEN, BOOK, DRESSING, SLEEPING_POTION, CRYSTAL_BALL, SPELL_BOOK, WAND, AMULET, DONKEY,
                   FIELD_KITCHEN, CART, LARGE_TENT, BACKPACK, PLATE_ARMOR, GREAT_HELMET, FLAIL, LANCE, WAR_HORSE,
                   GRAPPLING_HOOK, SCIMITAR, TRIDENT, BINOCULARS, SIMPLE_LOCKPICKS, PEBBLES, Item, Weapon)
+from magic import MageSchool
 
 
 class Bard:
@@ -87,12 +88,6 @@ class Scholar:
                  [KNIFE, BOOK, SLEEPING_TRAP, OIL_LAMP, LAMP_OIL, TINDER_BOX, (d6, FOOD), (d10, SILVER_COIN)],
                  [SHORT_SWORD, (10, DRESSING), SLEEPING_POTION, SLEEPING_TRAP, STORM_LANTERN, LAMP_OIL, TINDER_BOX,
                   (d6, FOOD), (d10, SILVER_COIN)]]
-
-
-class MageSchool(Enum):
-    Animist = auto()
-    Elementalist = auto()
-    Mentalist = auto()
 
 
 class Mage:

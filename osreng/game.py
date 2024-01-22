@@ -9,6 +9,7 @@ from attribute import roll_attribute, attribute_names, STRENGTH, CONSTITUTION, A
 from skill import base_skills
 from trait import suggested_weaknesses, suggested_keepsakes, suggested_looks
 from item import get_desired_skills
+from magic import MageSchool, get_starting_cantrips, get_starting_spells
 
 
 def create_custom_character(all_random):
@@ -24,7 +25,23 @@ def create_custom_character(all_random):
         print("\nVälj Yrke.")
     picked_class = pick_from_list([RandomFunction(roll_class)] + available_classes, all_random)
     character_sheet.clazz = picked_class
-    character_sheet.hero_abilities = resolve_choice(character_sheet.hero_abilities, all_random)
+    if isinstance(picked_class, Mage):
+        if not all_random:
+            print("Välj magiskola.")
+        mage_school = pick_from_list([RandomList([*MageSchool])] + [*MageSchool], all_random)
+        character_sheet.clazz.main_school = mage_school
+        if not all_random:
+            print("Välj trolleritrick.")
+        cantrips = get_starting_cantrips(mage_school)
+        character_sheet.spells = pick_multiple_from_list(
+            [RandomList(cantrips)] + cantrips, 3, [], all_random)
+        if not all_random:
+            print("Välj besvärjelser.")
+        spells = get_starting_spells(mage_school)
+        character_sheet.spells = pick_multiple_from_list(
+            [RandomList(spells)] + spells, 3, [], all_random)
+    else:
+        character_sheet.hero_abilities = resolve_choice(character_sheet.hero_abilities, all_random)
 
     if picked_class:
         if not all_random:
@@ -81,8 +98,11 @@ def create_custom_character(all_random):
 
     if picked_class:
         desired_skills = get_desired_skills(starting_items)
+        class_skill_points, general_skill_points = character_sheet.age.number_of_skillpoints
+        available_class_skills = character_sheet.clazz.skills
         if isinstance(character_sheet.clazz, Mage):
-            desired_skills.append(character_sheet.clazz.skills[0])
+            character_sheet.set_trained_skills([available_class_skills.pop(0)])
+            class_skill_points -= 1
 
         if not all_random:
             print("\nFöljande färdigheter rekommenderas utifrån ditt yrke och startutrustning:")
@@ -91,16 +111,15 @@ def create_custom_character(all_random):
                 desired_skills_string += "{}, ".format(show_as_option(item))
             print(desired_skills_string)
             print("Välj yrkesfärdigheter")
-        skill_points = character_sheet.age.number_of_skillpoints
 
-        class_skills = pick_skills_from_list([RandomList(picked_class.skills)] + picked_class.skills, skill_points[0],
-                                             desired_skills, all_random)
+        class_skills = pick_multiple_from_list([RandomList(available_class_skills)] + available_class_skills,
+                                               class_skill_points, desired_skills, all_random)
 
         skills_left = [x for x in base_skills if x not in class_skills]
         if not all_random:
             print("Välj övriga färdigheter")
-        general_skills = pick_skills_from_list([RandomList(skills_left)] + skills_left, skill_points[1], desired_skills,
-                                               all_random)
+        general_skills = pick_multiple_from_list([RandomList(skills_left)] + skills_left, general_skill_points,
+                                                 desired_skills, all_random)
 
         character_sheet.set_trained_skills(class_skills + general_skills)
 
@@ -271,18 +290,23 @@ def adjust_attributes(sheet):
             print("{} innehåller inte två godkända tal".format(raw_input))
 
 
-def pick_skills_from_list(list_of_choices, number_of_picks, suggestions, all_random):
+def pick_multiple_from_list(list_of_choices, number_of_picks, suggestions, all_random):
+    randomize = all_random
     picked_skills = []
     for _ in range(number_of_picks):
         list_of_choices[0].roll_list = list_of_choices[1:]
         num_choices = len(list_of_choices)
-        if not all_random:
+        if not randomize:
             for i in range(num_choices):
                 print("{}) {}.".format(i, show_as_option(list_of_choices[i])))
             list_choice = verified_int_input('# ', 0, num_choices-1)
         else:
-            if suggestions and suggestions[0] in list_of_choices:
-                list_choice = list_of_choices.index(suggestions[0])
+            if suggestions:
+                suggested_skill = suggestions.pop(0)
+                if suggested_skill in list_of_choices:
+                    list_choice = list_of_choices.index(suggested_skill)
+                else:
+                    list_choice = 0
             else:
                 list_choice = 0
         selected = list_of_choices[list_choice]
@@ -293,6 +317,7 @@ def pick_skills_from_list(list_of_choices, number_of_picks, suggestions, all_ran
                 print("Valde: " + show_as_option(rolled))
             list_of_choices.remove(rolled)
             picked_skills.append(return_instance(rolled))
+            randomize = True
         else:
             list_of_choices.remove(selected)
             picked_skills.append(return_instance(selected))
