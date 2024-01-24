@@ -1,9 +1,10 @@
 from random import choice
+from jsonpickle import encode, decode
 
 from dice import Random, RandomFunction, RandomList, RandomSpecific, to_die_string
 from race import roll_race, available_races
 from clazz import roll_class, Craftsman, roll_items, Mage, available_classes
-from character_sheet import CharacterSheet, CharacterError
+from character_sheet import CharacterSheet
 from age import roll_age, available_ages
 from attribute import roll_attribute, attribute_names, STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA
 from skill import base_skills
@@ -34,12 +35,12 @@ def create_custom_character(all_random):
             print("Välj trolleritrick.")
         cantrips = get_starting_cantrips(mage_school)
         character_sheet.spells = pick_multiple_from_list(
-            [RandomList(cantrips)] + cantrips, 3, [], all_random)
+            RandomList(cantrips), cantrips, 3, [], all_random)
         if not all_random:
             print("Välj besvärjelser.")
         spells = get_starting_spells(mage_school)
-        character_sheet.spells = pick_multiple_from_list(
-            [RandomList(spells)] + spells, 3, [], all_random)
+        character_sheet.spells += pick_multiple_from_list(
+            RandomList(spells), spells, 3, [], all_random)
     else:
         character_sheet.hero_abilities = resolve_choice(character_sheet.hero_abilities, all_random)
 
@@ -112,13 +113,13 @@ def create_custom_character(all_random):
             print(desired_skills_string)
             print("Välj yrkesfärdigheter")
 
-        class_skills = pick_multiple_from_list([RandomList(available_class_skills)] + available_class_skills,
+        class_skills = pick_multiple_from_list(RandomList(available_class_skills), available_class_skills,
                                                class_skill_points, desired_skills, all_random)
 
         skills_left = [x for x in base_skills if x not in class_skills]
         if not all_random:
             print("Välj övriga färdigheter")
-        general_skills = pick_multiple_from_list([RandomList(skills_left)] + skills_left, general_skill_points,
+        general_skills = pick_multiple_from_list(RandomList(skills_left), skills_left, general_skill_points,
                                                  desired_skills, all_random)
 
         character_sheet.set_trained_skills(class_skills + general_skills)
@@ -173,14 +174,40 @@ def show_as_option(option):
 def verified_int_input(prompt, low, high):
     while True:
         raw_choice = input(prompt)
-        try:
-            converted_choice = int(raw_choice)
-            if low <= converted_choice <= high:
-                return converted_choice
-            else:
-                print("Måste vara mellan {} och {}, men var {}".format(low, high, converted_choice))
-        except ValueError:
-            print("{} är inte ett godkänt heltal".format(raw_choice))
+        converted_choice = to_valid_integer(raw_choice, low, high)
+        if converted_choice is not None:
+            return converted_choice
+
+
+def to_valid_integer(raw_input, low, high):
+    try:
+        converted_choice = int(raw_input)
+        if low <= converted_choice <= high:
+            return converted_choice
+        else:
+            print("Måste vara mellan {} och {}, men var {}".format(low, high, converted_choice))
+    except ValueError:
+        print("{} är inte ett godkänt heltal".format(raw_input))
+    return None
+
+
+def verified_list_input(prompt, low, high, min_choices, max_choices):
+    while True:
+        choices_list = input(prompt).split(',')
+        if choices_list[0] == '':
+            return None
+        if min_choices <= len(choices_list) <= max_choices:
+            choices = []
+            for input_choice in choices_list:
+                converted_choice = to_valid_integer(input_choice, low, high)
+                if converted_choice is not None:
+                    choices.append(converted_choice)
+                else:
+                    break
+            return choices
+        else:
+            print("Välj ett antal alternativ mellan {} och {} separerat med att komma".format(
+                min_choices, max_choices))
 
 
 def return_instance(class_or_instance):
@@ -273,67 +300,92 @@ def adjust_attributes(sheet):
         for i in range(num_attrib):
             print("{}) {} - {}.".format(
                 i, show_as_option(attribute_names[i]), sheet.get_raw_attribute(i)))
-        raw_input = input('# ')
-        if not raw_input:
+        choices_list = verified_list_input('# ', 0, num_attrib, 2, 2)
+        if not choices_list:
             return
-        input_parts = raw_input.split(',')
-        if len(input_parts) != 2:
-            print("Kunde inte tolka strängen {}".format(raw_input))
-        try:
-            from_attribute = int(input_parts[0])
-            to_attribute = int(input_parts[1])
-            if 0 <= from_attribute <= num_attrib and 0 <= to_attribute <= num_attrib:
-                sheet.switch_attributes(from_attribute, to_attribute)
-            else:
-                print("Ogiltiga val, {}".format(raw_input))
-        except (ValueError, CharacterError):
-            print("{} innehåller inte två godkända tal".format(raw_input))
+        else:
+            sheet.switch_attributes(choices_list[0], choices_list[1])
 
 
-def pick_multiple_from_list(list_of_choices, number_of_picks, suggestions, all_random):
+def pick_multiple_from_list(randomizer, list_of_choices, number_of_picks, suggestions, all_random):
+    if not all_random:
+        print("Du kan antingen välja en åt gången eller flera samtidigt separerade med kommatecken")
+        print("Tryck retur för att slumpa fram resterande val")
     randomize = all_random
     picked_skills = []
-    for _ in range(number_of_picks):
-        list_of_choices[0].roll_list = list_of_choices[1:]
+    picks_left = number_of_picks
+    while picks_left > 0:
         num_choices = len(list_of_choices)
         if not randomize:
+            print("Picks left: {}".format(picks_left))
             for i in range(num_choices):
                 print("{}) {}.".format(i, show_as_option(list_of_choices[i])))
-            list_choice = verified_int_input('# ', 0, num_choices-1)
-        else:
-            if suggestions:
-                suggested_skill = suggestions.pop(0)
-                if suggested_skill in list_of_choices:
-                    list_choice = list_of_choices.index(suggested_skill)
-                else:
-                    list_choice = 0
-            else:
-                list_choice = 0
-        selected = list_of_choices[list_choice]
 
-        if isinstance(selected, Random):
-            rolled = selected.roll()
-            if not all_random:
-                print("Valde: " + show_as_option(rolled))
-            list_of_choices.remove(rolled)
-            picked_skills.append(return_instance(rolled))
-            randomize = True
+            list_choices = verified_list_input('# ', 0, num_choices-1, 1, number_of_picks)
+            if not list_choices:
+                randomize = True
+            else:
+                for picked in sorted(list_choices, reverse=True):
+                    selected = list_of_choices.pop(picked)
+                    picked_skills.append(return_instance(selected))
+                    picks_left -= 1
+
         else:
-            list_of_choices.remove(selected)
-            picked_skills.append(return_instance(selected))
+            for suggestion in suggestions:
+                if suggestion in list_of_choices:
+                    list_of_choices.remove(suggestion)
+                    picked_skills.append(suggestion)
+                    picks_left -= 1
+            for _ in range(picks_left):
+                randomizer.roll_list = list_of_choices
+                rnd = randomizer.roll()
+                picked_skills.append(rnd)
+                list_of_choices.remove(rnd)
+            return picked_skills
     return picked_skills
 
+
+def save_character(sheet):
+    print(sheet)
+    answer = input("Spara karaktären till fil (j/n)?")
+    if answer.lower() == 'j':
+        file_name = input("Välj användarnamn: ")
+        with open(file_name + '.json', 'a', encoding='utf-8') as file:
+            file.write(encode(sheet, unpicklable=True))
+            file.write("\n")
+        print()
+
+
+def load_character():
+    file_name = input("Ange användarnamn: ")
+    with open(file_name + '.json', 'r', encoding='utf-8') as file:
+        characters = []
+        character_lines = file.readlines()
+        for line in character_lines:
+            characters.append(decode(line))
+        print("Välj karaktär.")
+        if characters:
+            return pick_from_list(characters, False)
+        else:
+            return None
+
+
+welcome_message = """Välkommen!
+1) Skapa karaktär helt slumpmässigt.
+2) Skapa karaktär manuellt.
+3) Ladda karaktär.
+0) Avsluta"""
 
 if __name__ == '__main__':
     running = True
     while running:
-        print("Välkommen!\n1) Skapa karaktär helt slumpmässigt.\n2) Skapa karaktär manuellt.\n0) Avsluta")
-        generating_choice = verified_int_input("# ", 0, 2)
-        if generating_choice == 1:
-            sheet = create_custom_character(True)
-            print(sheet)
-        elif generating_choice == 2:
-            sheet = create_custom_character(False)
+        print(welcome_message)
+        generating_choice = verified_int_input("# ", 0, 3)
+        if generating_choice == 1 or generating_choice == 2:
+            sheet = create_custom_character(generating_choice == 1)
+            save_character(sheet)
+        elif generating_choice == 3:
+            sheet = load_character()
             print(sheet)
         elif generating_choice == 0:
             running = False

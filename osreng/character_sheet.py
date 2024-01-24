@@ -8,7 +8,7 @@ from skill import TrainedSkill
 from item import Weapon, Armor, MultiItem, SILVER_COIN, calculate_item_amounts
 
 
-class CharacterSheet:
+class CharacterSheet(object):
     def __init__(self):
         self._race = None
         self._clazz = None
@@ -265,7 +265,7 @@ class CharacterSheet:
         if self.hero_abilities:
             character_string += "\n\nHjälteförmågor:\n"
             hero_ability_part = ""
-            for ability in  self.hero_abilities:
+            for ability in self.hero_abilities:
                 if hero_ability_part:
                     hero_ability_part += ", "
                 hero_ability_part += ability.name

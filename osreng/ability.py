@@ -2,7 +2,7 @@ from skill import (CRAFTING, PERFORMANCE, HUNTING_AND_FISHING, CROSSBOWS, HAMMER
                    SPEARS, STAVES, SWORDS, AXES, MYTHS_AND_LEGENDS, BARTERING, SWIMMING)
 
 
-class HeroAbility:
+class HeroAbility(object):
     def __init__(self, requirement, cost, name):
         self.requirement = requirement
         self.cost = cost

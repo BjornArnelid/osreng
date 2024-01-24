@@ -1,7 +1,7 @@
 import random
 
 
-class Random:
+class Random(object):
     name = "Slumpmässigt"
 
     def roll(self):

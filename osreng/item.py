@@ -20,14 +20,14 @@ class ItemAttribute(Enum):
     DEMANDS_MOUNT = auto()
 
 
-class Armor:
+class Armor(object):
     def __init__(self, name, protection):
         self.name = name
         self.protection = protection
         self.required_skill = None
 
 
-class Weapon:
+class Weapon(object):
     def __init__(self, name, number_of_hands, requirement, item_range, damage, durability, attributes,
                  required_skill=None):
         self.number_of_hands = number_of_hands
@@ -49,7 +49,7 @@ class Weapon:
         return weapon_string
 
 
-class Item:
+class Item(object):
     def __init__(self, name, weight, required_skill=None):
         self.name = name
         self.weight = weight
@@ -60,7 +60,7 @@ class Item:
         return self.name
 
 
-class MultiItem:
+class MultiItem(object):
     def __init__(self, item, amount):
         self.item = item
         self.amount = amount

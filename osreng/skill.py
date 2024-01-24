@@ -1,14 +1,14 @@
 from attribute import INTELLIGENCE, CHARISMA, AGILITY, STRENGTH
 
 
-class Skill:
+class Skill(object):
     def __init__(self, name, attribute, base):
         self.name = name
         self.skill_attribute = attribute
         self.base_skill = base
 
 
-class TrainedSkill:
+class TrainedSkill(object):
     def __init__(self, skill_value, skill):
         self.skill_value = skill_value
         self.skill = skill

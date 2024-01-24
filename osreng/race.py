@@ -1,48 +1,48 @@
 from dice import d12
 
 
-class Trait:
+class Trait(object):
     def __init__(self, cost, name):
         self.cost = cost
         self.name = name
 
 
-class Human:
+class Human(object):
     name = "Människa"
     traits = [Trait(3, "Anpasslig")]
     suggested_names = ['Joruna', 'Tym', 'Halvelda', 'Garmander', 'Verolun',  'Lothar']
     base_speed = 10
 
 
-class Halfling:
+class Halfling(object):
     name = "Halvling"
     traits = [Trait(3, "Svårfångad")]
     suggested_names = ['Kvicke', 'Brine', 'Kott', 'Humle', 'Perrywick', 'Theolina']
     base_speed = 8
 
 
-class Dwarf:
+class Dwarf(object):
     name = "Dvärg"
     traits = [Trait(3, " Långsint")]
     suggested_names = ['Fnöskberga', 'Halwyld', 'Tymolana', 'Traut', 'Urd', 'Fermer']
     base_speed = 8
 
 
-class Elf:
+class Elf(object):
     name = 'Alv'
     traits = [Trait(3, "Inre frid")]
     suggested_names = ['Arasin', 'Illyriana', 'Galvander', 'Tyrindelia', 'Erwilnor', 'Andremone']
     base_speed = 10
 
 
-class Duck:
+class Duck(object):
     name = 'Anka'
     traits = [Trait(3, " Vresig"), Trait(0, " Simfötter")]
     suggested_names = ['Kvucksum', 'Splatts', 'Mogge', 'Groddy', 'Blisandina', 'Svulmhugg']
     base_speed = 8
 
 
-class Wolf:
+class Wolf(object):
     name = 'Varg'
     traits = [Trait(3, "Jaktsinne")]
     suggested_names = ['Wyld', 'Vargskugga', 'Lunariem', 'Obdurian', 'Frostbite', 'Wuldenhall']

@@ -19,7 +19,7 @@ from item import (LYRE, KNIFE, OIL_LAMP, LAMP_OIL, TINDER_BOX, FOOD, SILVER_COIN
 from magic import MageSchool
 
 
-class Bard:
+class Bard(object):
     name = 'Bard'
     suggested_names = ['Kvädare', 'Skaldekraft', 'Silverstämma', 'Gyllenklav', 'Honungstunga', 'Rimsmidare']
     preferred_attribute = CHARISMA
@@ -30,7 +30,7 @@ class Bard:
                  [BRASS_HORN, KNIFE, TORCH, TINDER_BOX, (d6, FOOD), (d8, SILVER_COIN)]]
 
 
-class Craftsman:
+class Craftsman(object):
     name = 'Hantverkare'
     suggested_names = ['Stenhammare', 'Timmerklyve', 'Kraftnäve', 'Tunnmakare', 'Brovälvare', 'Järnmästare']
     preferred_attribute = STRENGTH
@@ -51,7 +51,7 @@ class Craftsman:
             return self.item_sets[2]
 
 
-class Hunter:
+class Hunter(object):
     name = 'Jägare'
     suggested_names = ['Skogsräv', 'Ulvbane', 'Stigfinnare', 'Vindfarne', 'Blodshunger', 'Skuggpil']
     preferred_attribute = AGILITY
@@ -65,7 +65,7 @@ class Hunter:
                   (d6, SILVER_COIN)]]
 
 
-class Warrior:
+class Warrior(object):
     name = 'Krigare'
     suggested_names = ['Gravmakare', 'Grymkäft', 'Vindhugg', 'Svärdsblank', 'Orädd', 'Slaktaren']
     preferred_attribute = STRENGTH
@@ -78,7 +78,7 @@ class Warrior:
                  [LONG_SPEAR, STUDDED_LEATHER_ARMOR, OPEN_HELMET, TORCH, TINDER_BOX, (d6, FOOD), (d6, SILVER_COIN)]]
 
 
-class Scholar:
+class Scholar(object):
     name = 'Lärd'
     suggested_names = ['Boksynte', 'Allomklok', 'Vidblicke', 'Tankeklar', 'Dammlunga', 'Den lärde och välgödde']
     preferred_attribute = INTELLIGENCE
@@ -90,7 +90,7 @@ class Scholar:
                   (d6, FOOD), (d10, SILVER_COIN)]]
 
 
-class Mage:
+class Mage(object):
     name = 'Magiker'
     suggested_names = ['Rothjärta', 'Krokrygg', 'Gråkåpa', 'Vindhand', 'Stavhalte', 'Skuggmanare']
     preferred_attribute = WILL
@@ -113,7 +113,7 @@ class Mage:
             return self.skills
 
 
-class Peddler:
+class Peddler(object):
     name = 'Nasare'
     suggested_names = ['Silversnike', 'Guldtand', 'Silkestunga', 'Den läspe och ärlige', 'Isterbuk', 'Lockenpock']
     preferred_attribute = CHARISMA
@@ -126,7 +126,7 @@ class Peddler:
                   (d12, SILVER_COIN)]]
 
 
-class Knight:
+class Knight(object):
     name = 'Riddare'
     suggested_names = ['Drakhjärta', 'Gyllenlans', 'Gripenklo', 'Ädelsinne', 'Blankenhjelm', 'Sorgmantel']
     preferred_attribute = STRENGTH
@@ -140,7 +140,7 @@ class Knight:
                   (d12, SILVER_COIN)]]
 
 
-class Sailor:
+class Sailor(object):
     name = 'Sjöfarare'
     suggested_names = ['Sjöskum', 'Vågryttare', 'Skumfarne', 'Saltstänke', 'Sjöbjörn', 'Havsstorm']
     preferred_attribute = AGILITY
@@ -152,7 +152,7 @@ class Sailor:
                  [TRIDENT, BINOCULARS, ROPE, GRAPPLING_HOOK, TORCH, TINDER_BOX, (d8, FOOD), (d10, SILVER_COIN)]]
 
 
-class Thief:
+class Thief(object):
     name = 'Tjuv'
     suggested_names = ['Halvfinger', 'Svartråtta', 'Rödöga', 'Kvickfot', 'Dubbeltunga', 'Dolkenstöt']
     preferred_attribute = AGILITY

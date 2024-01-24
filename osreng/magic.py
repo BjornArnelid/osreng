@@ -12,15 +12,13 @@ class Props(Enum):
     IngredientDrawing = auto()
 
 
-class TimeScopes(Enum):
-    Action = auto()
-class Cantrip:
+class Cantrip(object):
     def __init__(self, name, school):
         self.name = name
         self.school = school
 
 
-class Spell:
+class Spell(object):
     def __init__(self, name, level, school):
         self.name = name
         self.level = level

@@ -2,7 +2,7 @@ from dice import d6
 from attribute import STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL
 
 
-class Young:
+class Young(object):
     name = "Ung"
     number_of_skillpoints = [6, 2]
     _increased_attributes = [AGILITY, CONSTITUTION]
@@ -13,7 +13,7 @@ class Young:
         return 0
 
 
-class MiddleAged:
+class MiddleAged(object):
     name = "Medelålders"
     number_of_skillpoints = [6, 4]
 
@@ -21,7 +21,7 @@ class MiddleAged:
         return 0
 
 
-class Old:
+class Old(object):
     name = "Gammal"
     number_of_skillpoints = [6, 6]
     _increased_attributes = [INTELLIGENCE, WILL]
