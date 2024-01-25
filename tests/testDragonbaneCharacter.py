@@ -1,14 +1,14 @@
 import unittest
 from parameterized import parameterized
 
-from race import roll_race, available_races, Human
-from clazz import roll_class, available_classes, Warrior, Mage, Craftsman, roll_items
-from age import roll_age, available_ages, Young, MiddleAged, Old
-from character_sheet import CharacterSheet, CharacterError
+from dragonbane.race import roll_race, available_races, Human
+from dragonbane.clazz import roll_class, available_classes, Warrior, Mage, Craftsman, roll_items
+from dragonbane.age import roll_age, available_ages, Young, MiddleAged, Old
+from dragonbane.dragonbane_sheet import DragonBaneSheet, CharacterError
 from dice import no_die, d4, d6
-from attribute import STRENGTH, CHARISMA, roll_attribute
-from skill import BEAST_LORE, BLUFFING, MENTALISM
-from item import WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX, LONG_SPEAR
+from dragonbane.attribute import STRENGTH, CHARISMA, roll_attribute
+from dragonbane.skill import BEAST_LORE, BLUFFING, MENTALISM
+from dragonbane.item import WAR_HAMMER_LIGHT, LEATHER_ARMOR, FORGING_TOOLS, TORCH, TINDER_BOX, LONG_SPEAR
 
 
 class MyTestCase(unittest.TestCase):
@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(any(isinstance(rolled_race, cls) for cls in available_races))
 
     def test_set_race_manually(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         with self.assertRaises(CharacterError):
             sheet.race = "orc"
         sheet.race = Human()
@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(any(isinstance(rolled_clazz, cls) for cls in available_classes))
 
     def test_set_class_manually(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         with self.assertRaises(CharacterError):
             sheet.clazz = "warrior"
         sheet.clazz = Warrior()
@@ -50,7 +50,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(any(isinstance(rolled_age, cls) for cls in available_ages))
 
     def test_set_age_manually(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         with self.assertRaises(CharacterError):
             sheet.age = 2
         sheet.age = MiddleAged()
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
 
     @parameterized.expand(available_classes)
     def test_switch_for_preferred_attribute(self, Clazz):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.clazz = Clazz()
         sheet.strength = roll_attribute()
         sheet.constitution = roll_attribute()
@@ -74,7 +74,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(sheet.get_raw_attribute(sheet.clazz.preferred_attribute), max(sheet._attributes))
 
     def test_adjust_for_age(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet._attributes = [11, 11, 11, 11, 11, 11]
         self.assertEqual(11, sheet.charisma)
 
@@ -94,7 +94,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(12, sheet.will)
 
     def test_switch_attributes(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet._attributes = [13, 11, 11, 11, 11, 15]
         sheet.switch_attributes(STRENGTH, CHARISMA)
         self.assertEqual(15, sheet.strength)
@@ -102,13 +102,13 @@ class MyTestCase(unittest.TestCase):
 
     @parameterized.expand(available_races)
     def test_get_movement_speed_for_races(self, Race):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.race = Race()
         sheet.agility = 11
         self.assertTrue(0 < sheet.movement_speed < 20)
 
     def test_adjust_speed_with_dexterity(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.race = Human()
 
         sheet.agility = 6
@@ -127,7 +127,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(14, sheet.movement_speed)
 
     def test_calculate_bonus_damage(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.strength = 3
         self.assertEqual(no_die, sheet.calculate_bonus_damage(STRENGTH))
 
@@ -138,7 +138,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(d6, sheet.calculate_bonus_damage(STRENGTH))
 
     def test_hitpoints(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.constitution = 11
         self.assertEqual([11, 11], sheet.hitpoints)
 
@@ -149,7 +149,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual([11, 11], sheet.hitpoints)
 
     def test_base_ability_skills(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.intelligence = 3
         self.assertEqual(3, sheet.get_skill_value(BEAST_LORE))
         self.assertEqual(0, sheet.get_skill_value(MENTALISM))
@@ -158,7 +158,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(4, sheet.get_skill_value(BLUFFING))
 
     def test_trained_skills(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.age = Young()
         sheet.intelligence = 11
         sheet.set_trained_skills([BEAST_LORE])
@@ -171,7 +171,7 @@ class MyTestCase(unittest.TestCase):
 
     @parameterized.expand(available_classes)
     def test_starting_abilities(self, Clazz):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.clazz = Clazz()
         if isinstance(sheet.clazz, Mage):
             self.assertFalse(sheet.hero_abilities, "Clazz {} should not have default assigned hero abilities .")
@@ -184,7 +184,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(roll_items(clazz), "Items not found for {}".format(clazz.name))
 
     def test_assign_items(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.clazz = Craftsman()
         sheet.assign_start_items(sheet.clazz.item_sets[0])
         self.assertEqual(sheet.weapons[0], WAR_HAMMER_LIGHT)
@@ -194,7 +194,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(sheet.money > 0, "Character should have starting money")
 
     def test_choice_in_items(self):
-        sheet = CharacterSheet()
+        sheet = DragonBaneSheet()
         sheet.clazz = Warrior()
         sheet.assign_start_items(roll_items(sheet.clazz))
         number_of_weapons = len(sheet.weapons)

@@ -1,4 +1,4 @@
-from attribute import INTELLIGENCE, CHARISMA, AGILITY, STRENGTH
+from dragonbane.attribute import INTELLIGENCE, CHARISMA, AGILITY, STRENGTH
 
 
 class Skill(object):

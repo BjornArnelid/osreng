@@ -1,9 +1,9 @@
 from enum import Enum, auto
 
-from attribute import STRENGTH
+from dragonbane.attribute import STRENGTH
 from dice import d6, d8, d10, d12, to_die_string
-from skill import (KNIVES, SWORDS, AXES, HAMMERS, STAVES, SPEARS, SLINGS, BOWS, CROSSBOWS, PERFORMANCE, SLEIGHT_OF_HAND,
-                   BUSHCRAFT, ACROBATICS, CRAFTING, HEALING, HUNTING_AND_FISHING, RIDING)
+from dragonbane.skill import (KNIVES, SWORDS, AXES, HAMMERS, STAVES, SPEARS, SLINGS, BOWS, CROSSBOWS, PERFORMANCE,
+                              SLEIGHT_OF_HAND, BUSHCRAFT, ACROBATICS, CRAFTING, HEALING, HUNTING_AND_FISHING, RIDING)
 
 
 class ItemAttribute(Enum):

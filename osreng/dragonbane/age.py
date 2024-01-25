@@ -1,5 +1,5 @@
 from dice import d6
-from attribute import STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL
+from dragonbane.attribute import STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL
 
 
 class Young(object):

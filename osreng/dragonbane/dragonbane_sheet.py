@@ -1,14 +1,14 @@
-from race import available_races
-from clazz import available_classes
-from age import available_ages
-from attribute import (STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA, calculate_movement_modifier,
-                       calculate_bonus_damage, calculate_skill_base_chance)
+from dragonbane.race import available_races
+from dragonbane.clazz import available_classes
+from dragonbane.age import available_ages
+from dragonbane.attribute import (STRENGTH, CONSTITUTION, AGILITY, INTELLIGENCE, WILL, CHARISMA,
+                                  calculate_movement_modifier, calculate_bonus_damage, calculate_skill_base_chance)
 from dice import to_die_string
-from skill import TrainedSkill
-from item import Weapon, Armor, MultiItem, SILVER_COIN, calculate_item_amounts
+from dragonbane.skill import TrainedSkill
+from dragonbane.item import Weapon, Armor, MultiItem, SILVER_COIN, calculate_item_amounts
 
 
-class CharacterSheet(object):
+class DragonBaneSheet(object):
     def __init__(self):
         self._race = None
         self._clazz = None
