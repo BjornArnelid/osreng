@@ -15,14 +15,26 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(10, character.wisdom)
         self.assertEqual(10, character.charisma)
 
-    @parameterized.expand(ancestries.available_ancestries)
-    def test_pick_ancestry(self, Ancestry):
+    @parameterized.expand(ancestry.available_ancestries)
+    def test_pick_ancestry(self, ancestry):
         character = pathfinderSheet.PathfinderSheet()
-        character.set_ancestry(Ancestry())
+
+        self.assertIsNotNone(ancestry.ability_boosts)
+        self.assertIsNotNone(ancestry.ability_flaws)
+
+        character.set_ancestry(ancestry)
         self.assertIsNotNone(character.size)
         self.assertIsNotNone(character.speed)
-        self.assertTrue(character.languages, "Languages should not be empty for ancestry {}".format(Ancestry.name))
-        self.assertTrue(character.hit_points, "Hit points should not be 0 for ancestry {}".format(Ancestry.name))
+        self.assertTrue(character.languages, "Languages should not be empty for ancestry {}".format(ancestry.name))
+        self.assertTrue(character.hit_points, "Hit points should not be 0 for ancestry {}".format(ancestry.name))
+
+    @parameterized.expand([*ancestry.Attribute])
+    def test_adjust_attribute(self, Attribute):
+        character = pathfinderSheet.PathfinderSheet()
+        character.boost_attribute(Attribute)
+        self.assertEqual(12, character.get_attribute(Attribute))
+        character.reduce_attribute(Attribute)
+        self.assertEqual(10, character.get_attribute(Attribute))
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 import enum
 
+from pathfinder.attribute import Attribute, Any
+
 
 class Size(enum.Enum):
     Medium = enum.auto()
@@ -16,52 +18,44 @@ class Language(enum.Enum):
     Halfling = enum.auto()
 
 
-class Dwarf:
-    name = "Dwarf"
-    size = Size.Medium
-    speed = 20
-    languages = [Language.Common, Language.Dwarven]
-    hit_points = 10
+class Ancestry:
+    def __init__(self, name, size, speed, main_languages, hit_points, ability_boosts, ability_flaws):
+        self.name = name
+        self.size = size
+        self.speed = speed
+        self.main_languages = main_languages
+        self.hit_points = hit_points
+        self.ability_boosts = ability_boosts
+        self.ability_flaws = ability_flaws
 
 
-class Elf:
-    name = "Elf"
-    size = Size.Medium
-    speed = 30
-    languages = [Language.Common, Language.Elven]
-    hit_points = 6
+Dwarf = Ancestry("Dwarf", Size.Medium, 20, [Language.Common, Language.Dwarven], 10,
+                 [Attribute.Constitution, Attribute.Wisdom, Any()], [Attribute.Charisma])
+
+Elf = Ancestry("Elf", Size.Medium, 30, [Language.Common, Language.Elven], 6,
+               [Attribute.Dexterity, Attribute.Intelligence, Any()],  [Attribute.Constitution])
+
+Gnome = Ancestry("Gnome", Size.Small, 25,
+                 [Language.Common, Language.Gnomish, Language.Sylvan],
+                 8, [Attribute.Constitution, Attribute.Charisma, Any()],
+                 [Attribute.Strength])
+
+Goblin = Ancestry("Goblin", Size.Small, 25, [Language.Common, Language.Goblin], 6,
+                  [Attribute.Dexterity, Attribute.Charisma, Any()], [Attribute.Wisdom])
+
+Halfling = Ancestry("Halfling", Size.Small, 25, [Language.Common, Language.Halfling],
+                   6, [Attribute.Dexterity, Attribute.Wisdom, Any()], [Attribute.Strength])
+
+Human = Ancestry("Human", Size.Medium, 25, [Language.Common], 8,
+                 [Any(), Any()], [])
 
 
-class Gnome:
-    name = "Gnome"
-    size = Size.Small
-    speed = 25
-    languages = [Language.Common, Language.Gnomish, Language.Sylvan]
-    hit_points = 8
+core_ancestries = [Dwarf, Elf, Gnome, Goblin, Halfling, Human]
 
+advanced_ancestries = []  # Catfolk, Cobold, Orc, Ratfolk, Tengu, Changeling, Dhampir, Planar scion
 
-class Goblin:
-    name = "Goblin"
-    size = Size.Small
-    speed = 25
-    languages = [Language.Common, Language.Goblin]
-    hit_points = 6
+omen_ancestries = []  # Android, Aphorite, Beastkin, Fetchling, Fleshwarp, Ganzi, Geniekin, Kitsune, Sprite, Strix
 
+omen2_ancestries = []  # Hobgoblins, Leshies, Lizardfolk,
 
-class Halfling:
-    name = "Halfling"
-    size = Size.Small
-    speed = 25
-    languages = [Language.Common, Language.Halfling]
-    hit_points = 6
-
-
-class Human:
-    name = "Human"
-    size = Size.Medium
-    speed = 25
-    languages = [Language.Common]
-    hit_points = 8
-
-
-available_ancestries = [Dwarf, Elf, Gnome, Goblin, Halfling, Human]
+available_ancestries = core_ancestries + advanced_ancestries + omen_ancestries + omen2_ancestries

@@ -46,10 +46,10 @@ if __name__ == '__main__':
         if generating_choice == 1 or generating_choice == 2:
             sheet = dragonbane.characterCreator.create_custom_character(generating_choice == 1)
             save_character(sheet)
-        if generating_choice == 3:
+        elif generating_choice == 3:
             sheet = pathfinder.characterCreator.create_custom_character()
             # save_character(sheet)
-        if generating_choice == 4:
+        elif generating_choice == 4:
             print("Den som väntar på något gott...")
         elif generating_choice == 5:
             sheet = load_character()
