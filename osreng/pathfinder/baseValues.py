@@ -65,6 +65,7 @@ class StaticModification:
 
 
 class CharacterChoice:
-    def __init__(self, description, choices):
+    def __init__(self, description, choices, number_of_picks=1):
         self.description = description
         self.choices = choices
+        self.number_of_picks = number_of_picks

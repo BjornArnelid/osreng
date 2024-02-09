@@ -1,7 +1,6 @@
 from random import choice
 
-from inputTools import (pick_from_list, verified_int_input, show_as_option, return_instance, pick_multiple_from_list,
-                        verified_list_input)
+from inputTools import pick_from_list, verified_int_input, show_as_option, return_instance, verified_list_input
 from dice import Random, RandomFunction, RandomList, RandomSpecific
 from dragonbane.race import roll_race, available_races
 from dragonbane.clazz import roll_class, Craftsman, roll_items, Mage, available_classes
@@ -36,13 +35,11 @@ def create_custom_character(all_random):
         if not all_random:
             print("Välj trolleritrick.")
         cantrips = get_starting_cantrips(mage_school)
-        character_sheet.spells = pick_multiple_from_list(
-            RandomList(cantrips), cantrips, 3, [], all_random)
+        character_sheet.spells = pick_multiple_from_list_with_random(RandomList(cantrips), cantrips, 3, [], all_random)
         if not all_random:
             print("Välj besvärjelser.")
         spells = get_starting_spells(mage_school)
-        character_sheet.spells += pick_multiple_from_list(
-            RandomList(spells), spells, 3, [], all_random)
+        character_sheet.spells += pick_multiple_from_list_with_random(RandomList(spells), spells, 3, [], all_random)
     else:
         character_sheet.hero_abilities = resolve_choice(character_sheet.hero_abilities, all_random)
 
@@ -115,14 +112,14 @@ def create_custom_character(all_random):
             print(desired_skills_string)
             print("Välj yrkesfärdigheter")
 
-        class_skills = pick_multiple_from_list(RandomList(available_class_skills), available_class_skills,
-                                               class_skill_points, desired_skills, all_random)
+        class_skills = pick_multiple_from_list_with_random(RandomList(available_class_skills), available_class_skills,
+                                                           class_skill_points, desired_skills, all_random)
 
         skills_left = [x for x in base_skills if x not in class_skills]
         if not all_random:
             print("Välj övriga färdigheter")
-        general_skills = pick_multiple_from_list(RandomList(skills_left), skills_left, general_skill_points,
-                                                 desired_skills, all_random)
+        general_skills = pick_multiple_from_list_with_random(RandomList(skills_left), skills_left, general_skill_points,
+                                                             desired_skills, all_random)
 
         character_sheet.set_trained_skills(class_skills + general_skills)
 
@@ -230,3 +227,41 @@ def adjust_attributes(sheet):
             return
         else:
             sheet.switch_attributes(choices_list[0], choices_list[1])
+
+
+def pick_multiple_from_list_with_random(randomizer, list_of_choices, number_of_picks, suggestions, all_random):
+    if not all_random:
+        print("Du kan antingen välja en åt gången eller flera samtidigt separerade med kommatecken")
+        print("Tryck retur för att slumpa fram resterande val")
+    randomize = all_random
+    picked_skills = []
+    picks_left = number_of_picks
+    while picks_left > 0:
+        num_choices = len(list_of_choices)
+        if not randomize:
+            print("Picks left: {}".format(picks_left))
+            for i in range(num_choices):
+                print("{}) {}.".format(i, show_as_option(list_of_choices[i])))
+
+            list_choices = verified_list_input('# ', 0, num_choices-1, 1, number_of_picks)
+            if not list_choices:
+                randomize = True
+            else:
+                for picked in sorted(list_choices, reverse=True):
+                    selected = list_of_choices.pop(picked)
+                    picked_skills.append(return_instance(selected))
+                    picks_left -= 1
+
+        else:
+            for suggestion in suggestions:
+                if suggestion in list_of_choices:
+                    list_of_choices.remove(suggestion)
+                    picked_skills.append(suggestion)
+                    picks_left -= 1
+            for _ in range(picks_left):
+                randomizer.roll_list = list_of_choices
+                rnd = randomizer.roll()
+                picked_skills.append(rnd)
+                list_of_choices.remove(rnd)
+            return picked_skills
+    return picked_skills

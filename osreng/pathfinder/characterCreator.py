@@ -1,6 +1,7 @@
 import inputTools
 from pathfinder import pathfinderSheet, baseValues, spell, ancestry
 from pathfinder.baseValues import SheetModifications, AbilityScore, CharacterChoice, StaticModification
+from dice import RandomList
 
 
 def create_custom_character():
@@ -20,14 +21,15 @@ def create_custom_character():
             character_sheet.add(modification)
         elif isinstance(modification, CharacterChoice):
             print(modification.description)
-            choice = inputTools.pick_from_list(modification.choices, False)
-            if isinstance(choice, StaticModification):
-                character_sheet.add(choice)
-            elif isinstance(modification, SheetModifications):
-                character_sheet.heritage = modification.name
-                for value in modification.modifications:
-                    # TODO Same parsing thing here
-                    character_sheet.add(value)
+            choices = inputTools.pick_multiple_from_list(modification.choices, modification.number_of_picks)
+            for choice in choices:
+                if isinstance(choice, StaticModification):
+                    character_sheet.add(choice)
+                elif isinstance(modification, SheetModifications):
+                    character_sheet.heritage = modification.name
+                    for value in modification.modifications:
+                        # TODO Same parsing thing here
+                        character_sheet.add(value)
         else:
             print("Unknown modification {}".format(modification))
     print(character_sheet)
