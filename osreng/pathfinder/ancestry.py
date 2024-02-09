@@ -82,8 +82,7 @@ Dwarf = SheetModifications('Dwarf', [
     StaticModification(Field.Languages, Language.Common), StaticModification(Field.Languages, Language.Dwarven),
     StaticModification(Field.Traits, Trait.Dwarf), StaticModification(Field.Traits, Trait.Humanoid),
     StaticModification(Perception.Senses, Senses.DarkVision),
-    ClanDagger,
-    CharacterChoice("Pick heritage", [AncientDwarf, WardenDwarf, ForgeDwarf, RockDwarf, StrongDwarf])])
+    ClanDagger])
 
 # Elf
 ArcticElf = SheetModifications("Arctic elf",
@@ -111,8 +110,7 @@ Elf = SheetModifications('Elf', [
     StaticModification(AbilityScore.Constitution, -2),
     StaticModification(Field.Languages, Language.Common), StaticModification(Field.Languages, Language.Elven),
     StaticModification(Field.Traits, Trait.Elf), StaticModification(Field.Traits, Trait.Humanoid),
-    StaticModification(Perception.Senses, Senses.LowLightVision),
-    CharacterChoice("Heritage", [ArcticElf, CavernElf, SeerElf, WhisperElf, WoodlandElf])])
+    StaticModification(Perception.Senses, Senses.LowLightVision)])
 
 # Gnome
 ChameleonGnome = SheetModifications("Chameleon gnome",
@@ -144,8 +142,7 @@ Gnome = SheetModifications('Gnome', [
     StaticModification(Field.Languages, Language.Common), StaticModification(Field.Languages, Language.Gnomish),
     StaticModification(Field.Languages, Language.Sylvan),
     StaticModification(Field.Traits, Trait.Gnome), StaticModification(Field.Traits, Trait.Humanoid),
-    StaticModification(Perception.Senses, Senses.LowLightVision),
-    CharacterChoice("Pick heritage", [ChameleonGnome, FeyGnome, SensateGnome, UmbralGnome, WellspringGnome])])
+    StaticModification(Perception.Senses, Senses.LowLightVision)])
 
 # Goblin
 CharhideGoblin = SheetModifications("Charhide goblin",
@@ -175,8 +172,7 @@ Goblin = SheetModifications('Goblin', [
     StaticModification(AbilityScore.Wisdom, -2),
     StaticModification(Field.Languages, Language.Common), StaticModification(Field.Languages, Language.Goblin),
     StaticModification(Field.Traits, Trait.Goblin), StaticModification(Field.Traits, Trait.Humanoid),
-    StaticModification(Perception.Senses, Senses.DarkVision),
-    CharacterChoice("Pick heritage", [CharhideGoblin, IrongutGoblin, RazortoothGoblin, SnowGoblin, UnbreakableGoblin])])
+    StaticModification(Perception.Senses, Senses.DarkVision)])
 
 # Halfling
 GutsyHalfling = SheetModifications("Gutsy halfling",
@@ -207,8 +203,7 @@ Halfling = SheetModifications('Halfling', [
     StaticModification(AbilityScore.Strength, -2),
     StaticModification(Field.Languages, Language.Common), StaticModification(Field.Languages, Language.Halfling),
     StaticModification(Field.Traits, Trait.Halfling), StaticModification(Field.Traits, Trait.Humanoid),
-    StaticModification(Perception.Senses, Senses.KeenEyes),
-    CharacterChoice("Pick heritage", [GutsyHalfling, HillockHalfling, NomadicHalfling, TwilightHalfling, WildwoodHalfling])])
+    StaticModification(Perception.Senses, Senses.KeenEyes)])
 
 # TODO Humans are a bit special
 # Human
@@ -235,8 +230,7 @@ Human = SheetModifications('Human', [
                                                  IntelligenceBoost, WisdomBoost, CharismaBoost], 2),
     StaticModification(Field.Languages, Language.Common),
     StaticModification(Field.Traits, Trait.Human), StaticModification(Field.Traits, Trait.Humanoid),
-    StaticModification(Perception.Senses, Senses.Normal),
-    CharacterChoice("Pick heritage", [HalfElf, HalfOrc, SkilledHeritage, VersatileHeritage])])
+    StaticModification(Perception.Senses, Senses.Normal)])
 
 core_ancestries = [Dwarf, Elf, Gnome, Goblin, Halfling, Human]
 
@@ -247,3 +241,20 @@ omen_ancestries = []  # Android, Aphorite, Beastkin, Fetchling, Fleshwarp, Ganzi
 omen2_ancestries = []  # Hobgoblins, Leshies, Lizardfolk,
 
 available_ancestries = core_ancestries + advanced_ancestries + omen_ancestries + omen2_ancestries
+
+
+def get_heritages(ancestry):
+    if ancestry == Dwarf:
+        return [AncientDwarf, WardenDwarf, ForgeDwarf, RockDwarf, StrongDwarf]
+    elif ancestry == Elf:
+        return [ArcticElf, CavernElf, SeerElf, WhisperElf, WoodlandElf]
+    elif ancestry == Gnome:
+        return [ChameleonGnome, FeyGnome, SensateGnome, UmbralGnome, WellspringGnome]
+    elif ancestry == Goblin:
+        return [CharhideGoblin, IrongutGoblin, RazortoothGoblin, SnowGoblin, UnbreakableGoblin]
+    elif ancestry == Halfling:
+        return [GutsyHalfling, HillockHalfling, NomadicHalfling, TwilightHalfling, WildwoodHalfling]
+    elif ancestry == Human:
+        return [HalfElf, HalfOrc, SkilledHeritage, VersatileHeritage]
+    else:
+        raise ValueError("Unknown ancestry {}".format(ancestry))

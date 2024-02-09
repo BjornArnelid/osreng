@@ -15,24 +15,27 @@ def create_custom_character():
     # Step 2
     print("Pick Ancestry")
     ancestry_pick = inputTools.pick_from_list(ancestry.available_ancestries, False)
-    character_sheet.ancestry = ancestry_pick.name
-    for modification in ancestry_pick.modifications:
-        if isinstance(modification, StaticModification):
-            character_sheet.add(modification)
-        elif isinstance(modification, CharacterChoice):
-            print(modification.description)
-            choices = inputTools.pick_multiple_from_list(modification.choices, modification.number_of_picks)
-            for choice in choices:
-                if isinstance(choice, StaticModification):
-                    character_sheet.add(choice)
-                elif isinstance(modification, SheetModifications):
-                    character_sheet.heritage = modification.name
-                    for value in modification.modifications:
-                        # TODO Same parsing thing here
-                        character_sheet.add(value)
-        else:
-            print("Unknown modification {}".format(modification))
+    character_sheet.ancestry = ancestry_pick
+    resolve_choice(ancestry_pick.modifications, character_sheet)
+    print("Pick heritage")
+    heritage_pick = inputTools.pick_from_list(ancestry.get_heritages(ancestry_pick), False)
+    character_sheet.heritage = heritage_pick
+    resolve_choice(heritage_pick.modifications, character_sheet)
+
     print(character_sheet)
+
+
+def resolve_choice(choices, character_sheet):
+    for choice in choices:
+        if isinstance(choice, StaticModification):
+            character_sheet.add(choice)
+        elif isinstance(choice, CharacterChoice):
+            print(choice.description)
+            choices = inputTools.pick_multiple_from_list(choice.choices, choice.number_of_picks)
+            resolve_choice(choices, character_sheet)
+        else:
+            print("Unknown modification {}".format(choice))
+
 
 
 CoreValues = SheetModifications("Core modifications", [

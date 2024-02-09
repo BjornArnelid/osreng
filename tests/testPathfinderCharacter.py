@@ -2,9 +2,9 @@ import unittest
 
 from parameterized import parameterized
 
-from pathfinder import pathfinderSheet, ancestry, baseValues, spell, characterCreator
-from pathfinder.ancestry import Dwarf
-from pathfinder.baseValues import AbilityScore, StaticModification, CharacterChoice, Field, HitPoints, Movement
+from pathfinder import ancestry
+from pathfinder.ancestry import Dwarf, get_heritages, available_ancestries
+from pathfinder.baseValues import AbilityScore, StaticModification, HitPoints, Movement
 from pathfinder.characterCreator import CoreValues
 from pathfinder.pathfinderSheet import PathfinderSheet
 
@@ -50,13 +50,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(20, character.get(Movement.Speed))
 
     @parameterized.expand(ancestry.available_ancestries)
-    def test_pick_ancestry(self, ancestry):
-        self.assertTrue(ancestry.modifications, "Ancestry {} should have modifications".format(ancestry.name))
+    def test_pick_ancestry(self, the_ancestry):
+        self.assertTrue(the_ancestry.modifications, "Ancestry {} should have modifications".format(the_ancestry.name))
 
-    # @parameterized.expand(ancestry.available_ancestries)
-    # def test_heritage_abilities(self, Ancestry):
-    #     for heritage in Ancestry.heritages:
-    #         self.assertTrue(heritage.abilities, "Heritage {} should have heritages".format(heritage.name))
+    @parameterized.expand(ancestry.available_ancestries)
+    def test_heritage_abilities(self, the_ancestry):
+        for heritage in get_heritages(the_ancestry):
+            self.assertIsNotNone(heritage.modifications, "Heritage {} should have modifications".format(heritage.name))
 
 
 def _create_clean_sheet():

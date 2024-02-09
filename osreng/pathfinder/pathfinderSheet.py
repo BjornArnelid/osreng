@@ -54,9 +54,9 @@ class PathfinderSheet:
     def __str__(self):
         character_string = "CHARACTER"
         if self.ancestry:
-            character_string += "\nAncestry: " + self.ancestry
+            character_string += "\nAncestry: " + self.ancestry.name
         if self.heritage:
-            character_string += "\nHeritage: " + self.heritage
+            character_string += "\nHeritage: " + self.heritage.name
         if self.size:
             character_string += "\nSize: " + str(self.size.value)
         if self.traits:
